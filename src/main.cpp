@@ -32,6 +32,7 @@ VkQueue graphicsQueue;
 VkQueue presentQueue;
 
 VkSurfaceKHR surface;
+VkRenderPass renderPass;
 VkPipelineLayout pipelineLayout;
 
 VkSwapchainKHR swapChain;
@@ -43,10 +44,10 @@ std::vector<VkImageView> swapChainImageViews;
 
 GLFWwindow *window;
 
-static std::vector<char> readFile(const std::string& path){
+static std::vector<char> readFile(const std::string &path) {
     std::ifstream file(path, std::ios::ate | std::ios::binary);
 
-    if(!file.is_open()){
+    if (!file.is_open()) {
         throw std::runtime_error("failed to open file!");
     }
 
@@ -516,10 +517,10 @@ void createSwapChain() {
     swapChainExtent = extent;
 }
 
-void createImageViews(){
+void createImageViews() {
     swapChainImageViews.resize(swapChainImages.size());
 
-    for(size_t i = 0; i < swapChainImages.size();i++){
+    for (size_t i = 0; i < swapChainImages.size(); i++) {
         VkImageViewCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         createInfo.image = swapChainImages[i];
@@ -544,11 +545,11 @@ void createImageViews(){
     }
 };
 
-VkShaderModule createShaderModule(const std::vector<char>& code){
+VkShaderModule createShaderModule(const std::vector<char> &code) {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
-    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+    createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
     VkShaderModule shaderModule;
     if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
@@ -558,7 +559,39 @@ VkShaderModule createShaderModule(const std::vector<char>& code){
     return shaderModule;
 }
 
-void createGraphicsPipeline(){
+void createRenderPass() {
+    VkAttachmentDescription colorAttachment{};
+    colorAttachment.format = swapChainImageFormat;
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference colorAttachmentRef{};
+    colorAttachmentRef.attachment = 0;
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpass{};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+    VkRenderPassCreateInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassInfo.attachmentCount = 1;
+    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.subpassCount = 1;
+    renderPassInfo.pSubpasses = &subpass;
+
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create render pass!");
+    }
+}
+
+void createGraphicsPipeline() {
     auto vertShaderCode = readFile("shaders/base_vert.spv");
     auto fragShaderCode = readFile("shaders/base_frag.spv");
 
@@ -633,7 +666,8 @@ void createGraphicsPipeline(){
     multisampling.alphaToOneEnable = VK_FALSE; // Optional
 
     VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-    colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    colorBlendAttachment.colorWriteMask =
+            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     colorBlendAttachment.blendEnable = VK_TRUE;
     colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
     colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
@@ -688,6 +722,7 @@ void init() {
     createLogicalDevice();
     createSwapChain();
     createImageViews();
+    createRenderPass();
     createGraphicsPipeline();
 }
 
@@ -702,10 +737,12 @@ void cleanup() {
         DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
 
-    for(auto imageView : swapChainImageViews){
+    for (auto imageView : swapChainImageViews) {
         vkDestroyImageView(device, imageView, nullptr);
     }
 
+    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+    vkDestroyRenderPass(device, renderPass, nullptr);
     vkDestroySwapchainKHR(device, swapChain, nullptr);
     vkDestroyDevice(device, nullptr);
     vkDestroySurfaceKHR(instance, surface, nullptr);
