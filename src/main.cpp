@@ -40,8 +40,9 @@ VkPipeline graphicsPipeline;
 VkSwapchainKHR swapChain;
 VkFormat swapChainImageFormat;
 VkExtent2D swapChainExtent;
-std::vector<VkImage> swapChainImages;
 
+std::vector<VkImage> swapChainImages;
+std::vector<VkFramebuffer> swapChainFramebuffers;
 std::vector<VkImageView> swapChainImageViews;
 
 GLFWwindow *window;
@@ -735,6 +736,29 @@ void createGraphicsPipeline() {
     vkDestroyShaderModule(vulkanDevice, vertShaderModule, nullptr);
 };
 
+void createFramebuffers() {
+    swapChainFramebuffers.resize(swapChainImageViews.size());
+
+    for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+        VkImageView attachments[] = {
+                swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = swapChainExtent.width;
+        framebufferInfo.height = swapChainExtent.height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(vulkanDevice, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create framebuffer!");
+        }
+    }
+};
+
 void init() {
     initWindow();
 
@@ -747,6 +771,7 @@ void init() {
     createImageViews();
     createRenderPass();
     createGraphicsPipeline();
+    createFramebuffers();
 }
 
 void loop() {
@@ -762,6 +787,10 @@ void cleanup() {
 
     for (auto imageView : swapChainImageViews) {
         vkDestroyImageView(vulkanDevice, imageView, nullptr);
+    }
+
+    for (auto framebuffer : swapChainFramebuffers) {
+        vkDestroyFramebuffer(vulkanDevice, framebuffer, nullptr);
     }
 
     vkDestroyPipeline(vulkanDevice, graphicsPipeline, nullptr);
