@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
+#include "devices/window/glfw.hpp"
+
 const uint32_t WIDTH = 900;
 const uint32_t HEIGHT = 700;
 
@@ -58,7 +60,8 @@ std::vector<VkImageView> swapChainImageViews;
 
 std::vector<VkCommandBuffer> commandBuffers;
 
-GLFWwindow* window;
+engine::devices::window::Glfw glfw;
+std::shared_ptr<engine::devices::window::Window> window;
 
 static std::vector<char> readFile(const std::string& path)
 {
@@ -212,12 +215,13 @@ static void framebufferResizeCallback(GLFWwindow* window, int width, int height)
 
 void initWindow()
 {
-    glfwInit();
+    glfw.init();
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    window = glfw.createWindow(WIDTH, HEIGHT, "Mineblocks");
 
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Mineblocks", nullptr, nullptr);
-    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+    window->show();
+
+    glfwSetFramebufferSizeCallback(window->getWindow(), framebufferResizeCallback);
 }
 
 void createInstance()
@@ -263,7 +267,8 @@ void createInstance()
 
 void createSurface()
 {
-    if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(instance, window->getWindow(), nullptr, &surface) !=
+        VK_SUCCESS) {
         throw std::runtime_error("failed to create window surface");
     }
 }
@@ -334,7 +339,7 @@ VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
     }
     else {
         int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(window->getWindow(), &width, &height);
 
         VkExtent2D actualExtent = {static_cast<uint32_t>(width),
                                    static_cast<uint32_t>(height)};
@@ -930,9 +935,9 @@ void recreateSwapChain()
     vkDeviceWaitIdle(vulkanDevice);
 
     int width = 0, height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
+    glfwGetFramebufferSize(window->getWindow(), &width, &height);
     while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(window->getWindow(), &width, &height);
         glfwWaitEvents();
     }
 
@@ -1069,8 +1074,8 @@ void init()
 
 void loop()
 {
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+    while (!glfwWindowShouldClose(window->getWindow())) {
+        glfw.update();
         drawFrame();
     }
 
@@ -1098,9 +1103,9 @@ void cleanup()
     vkDestroySurfaceKHR(instance, surface, nullptr);
     vkDestroyInstance(instance, nullptr);
 
-    glfwDestroyWindow(window);
+    glfw.destroyWindow(window->getId());
 
-    glfwTerminate();
+    glfw.destroy();
 }
 
 int main()

@@ -16,7 +16,20 @@ find_package(Vulkan REQUIRED)
 set(DEPENDENCIES Vulkan::Vulkan ${CONAN_LIBS})
 
 #Add executable
-add_executable(mineblocks src/main.cpp)
+add_executable(mineblocks
+        src/devices/graphics/instance.cpp
+        src/devices/window/glfw.cpp
+        src/devices/window/window.cpp
+
+        src/graphics/graphics.cpp
+
+        src/utils/version.cpp
+
+        src/app.cpp
+        src/main.cpp)
+
+#Set include directory
+target_include_directories(mineblocks PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
 #Link dependencies to executable
 target_link_libraries(mineblocks ${DEPENDENCIES})
