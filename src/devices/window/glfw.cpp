@@ -97,4 +97,13 @@ namespace engine::devices::window {
 
         throw std::runtime_error("Glfw error: " + stringifyGlfwResult(result));
     }
+
+    std::vector<const char*> Glfw::getGlfwVulkanExtensions()
+    {
+        uint32_t glfwExtensionCount = 0;
+        const char** glfwExtensions =
+            glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+        return std::vector<const char*>(glfwExtensions,
+                                        glfwExtensions + glfwExtensionCount);
+    }
 } // namespace engine::devices::window

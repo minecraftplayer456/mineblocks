@@ -30,6 +30,8 @@ namespace engine::devices::window {
         static std::string stringifyGlfwResult(int32_t result);
         static void assertGlfwResult(int32_t result);
 
+        static std::vector<const char*> getGlfwVulkanExtensions();
+
       private:
         std::unordered_map<int, std::shared_ptr<Window>> m_windows;
     };

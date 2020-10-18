@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include <vulkan/vulkan.h>
 
-#include "app.hpp"
+#include "../../utils/app_info.hpp"
+#include "vulkan_debug.hpp"
 
 namespace engine::devices::graphics {
     const std::string engineName = "engine";
@@ -11,7 +15,7 @@ namespace engine::devices::graphics {
 
     class Instance {
       public:
-        void create(const App& app);
+        void create(const utils::AppInfo& info);
 
         void destroy();
 
@@ -19,5 +23,11 @@ namespace engine::devices::graphics {
 
       private:
         VkInstance m_instance;
+
+        VulkanDebug m_vulkanDebug;
+
+        std::vector<const char*> getRequiredExtensions(const utils::AppInfo& appInfo);
+
+        std::vector<const char*> getValidationLayers(const utils::AppInfo& appInfo);
     };
 } // namespace engine::devices::graphics

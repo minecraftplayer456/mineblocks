@@ -18,14 +18,16 @@ set(DEPENDENCIES Vulkan::Vulkan ${CONAN_LIBS})
 #Add executable
 add_executable(mineblocks
         src/devices/graphics/instance.cpp
+        src/devices/graphics/vulkan_debug.cpp
+
         src/devices/window/glfw.cpp
         src/devices/window/window.cpp
 
         src/graphics/graphics.cpp
 
+        src/utils/app_info.cpp
         src/utils/version.cpp
 
-        src/app.cpp
         src/main.cpp)
 
 #Set include directory
