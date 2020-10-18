@@ -1,6 +1,12 @@
 #Add engine library
 add_library(engine
-        core/engine.cpp)
+        core/app.cpp
+        core/engine.cpp
+        core/module.cpp
+
+        test/test_module.cpp
+
+        utils/version.cpp)
 
 #Set include directory
 target_include_directories(engine PUBLIC ${INCLUDE_DIRS})
