@@ -23,26 +23,32 @@ namespace engine::core {
 
     void ModuleRegistry::registerModule(Module* module)
     {
-        for (const auto& stage : module->m_stages) {
-            auto modules = &m_modules[stage];
-            modules->push_back(std::shared_ptr<Module>(module));
-        }
+        m_modules.push_back(std::shared_ptr<Module>(module));
     }
 
     void ModuleRegistry::callStage(Stage stage)
     {
-        for (auto& module : m_modules[stage]) {
-            switch (stage) {
-                case Stage::init:
-                    module->init();
-                case Stage::input:
-                    module->input();
-                case Stage::update:
-                    module->update();
-                case Stage::render:
-                    module->render();
-                case Stage::cleanup:
-                    module->cleanup();
+        for (const auto& module : m_modules) {
+            for (auto moduleStages : module->m_stages) {
+                if (moduleStages == stage) {
+                    switch (moduleStages) {
+                        case Stage::init:
+                            module->init();
+                            break;
+                        case Stage::input:
+                            module->input();
+                            break;
+                        case Stage::update:
+                            module->update();
+                            break;
+                        case Stage::render:
+                            module->render();
+                            break;
+                        case Stage::cleanup:
+                            module->cleanup();
+                            break;
+                    }
+                }
             }
         }
     }

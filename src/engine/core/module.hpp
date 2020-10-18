@@ -40,6 +40,6 @@ namespace engine::core {
         void callStage(Stage stage);
 
       private:
-        std::unordered_map<Stage, std::vector<std::shared_ptr<Module>>> m_modules;
+        std::vector<std::shared_ptr<Module>> m_modules;
     };
 } // namespace engine::core

@@ -8,5 +8,9 @@ namespace engine::test {
         TestModule();
 
         void init() override;
+        void input() override;
+        void update() override;
+        void render() override;
+        void cleanup() override;
     };
 } // namespace engine::test
