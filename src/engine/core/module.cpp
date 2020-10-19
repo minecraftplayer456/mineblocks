@@ -1,6 +1,15 @@
 #include "module.hpp"
 
 namespace engine::core {
+    Module::Module()
+    {
+        m_stages = setupStages();
+    }
+
+    std::vector<Stage> Module::setupStages()
+    {
+    }
+
     void Module::init()
     {
     }

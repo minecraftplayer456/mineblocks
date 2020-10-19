@@ -3,10 +3,10 @@
 #include <spdlog/spdlog.h>
 
 namespace engine::test {
-    TestModule::TestModule()
+    std::vector<core::Stage> TestModule::setupStages()
     {
-        m_stages = {core::Stage::init, core::Stage::input, core::Stage::update,
-                    core::Stage::render, core::Stage::cleanup};
+        return {core::Stage::init, core::Stage::input, core::Stage::update,
+                core::Stage::render, core::Stage::cleanup};
     }
 
     void TestModule::init()

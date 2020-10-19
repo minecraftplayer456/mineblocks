@@ -3,10 +3,11 @@
 #include "engine/test/test_module.hpp"
 
 namespace engine::core {
-    Engine::Engine(App app)
-        : m_app(std::move(app))
+    Engine::Engine(App* app)
+        : m_app(app)
     {
-        registerModules();
+        m_moduleRegistry.registerModule(app);
+        m_moduleRegistry.registerModule(new engine::test::TestModule());
     }
 
     void Engine::run()
@@ -37,12 +38,7 @@ namespace engine::core {
         m_running = false;
     }
 
-    void Engine::registerModules()
-    {
-        m_moduleRegistry.registerModule(new engine::test::TestModule());
-    }
-
-    App Engine::getApp() const
+    App* Engine::getApp() const
     {
         return m_app;
     }

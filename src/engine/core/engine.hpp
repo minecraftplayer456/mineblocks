@@ -6,24 +6,22 @@
 namespace engine::core {
     class Engine {
       public:
-        Engine(App app);
+        explicit Engine(App* app);
 
         void run();
 
         void requestStop();
 
-        App getApp() const;
+        [[nodiscard]] App* getApp() const;
 
-        ModuleRegistry getModuleRegistry() const;
+        [[nodiscard]] ModuleRegistry getModuleRegistry() const;
 
-        bool isRunning() const;
+        [[nodiscard]] bool isRunning() const;
 
       private:
-        App m_app;
+        App* m_app;
         ModuleRegistry m_moduleRegistry;
 
         bool m_running = false;
-
-        void registerModules();
     };
 } // namespace engine::core

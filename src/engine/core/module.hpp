@@ -21,12 +21,17 @@ namespace engine::core {
     class Module {
         friend ModuleRegistry;
 
+      public:
+        Module();
+
       protected:
         virtual void init();
         virtual void input();
         virtual void update();
         virtual void render();
         virtual void cleanup();
+
+        virtual std::vector<Stage> setupStages();
 
         std::vector<Stage> m_stages;
     };

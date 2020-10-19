@@ -8,5 +8,8 @@ namespace mineblocks::core {
         Mineblocks();
 
       private:
+        std::vector<engine::core::Stage> setupStages() override;
+
+        void init() override;
     };
 } // namespace mineblocks::core

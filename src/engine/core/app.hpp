@@ -2,10 +2,11 @@
 
 #include <string>
 
-#include <engine/utils/version.hpp>
+#include "engine/utils/version.hpp"
+#include "module.hpp"
 
 namespace engine::core {
-    class App {
+    class App : public Module {
       public:
         explicit App(std::string name, const utils::Version& version = {1, 0, 0});
 
