@@ -6,6 +6,7 @@ add_library(engine
 
         test/test_module.cpp
 
+        utils/type_info.hpp
         utils/version.cpp)
 
 #Set include directory

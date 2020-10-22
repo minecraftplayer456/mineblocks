@@ -14,12 +14,12 @@ namespace engine::core {
     {
         m_running = true;
 
-        m_moduleRegistry.callStage(Stage::init);
+        m_moduleRegistry.callStage(Stage::Init);
 
         while (m_running) {
-            m_moduleRegistry.callStage(Stage::input);
-            m_moduleRegistry.callStage(Stage::update);
-            m_moduleRegistry.callStage(Stage::render);
+            m_moduleRegistry.callStage(Stage::Input);
+            m_moduleRegistry.callStage(Stage::Update);
+            m_moduleRegistry.callStage(Stage::Render);
 
             static int i = 0;
 
@@ -30,7 +30,7 @@ namespace engine::core {
             i++;
         }
 
-        m_moduleRegistry.callStage(Stage::cleanup);
+        m_moduleRegistry.callStage(Stage::Cleanup);
     }
 
     void Engine::requestStop()

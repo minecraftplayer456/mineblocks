@@ -7,14 +7,4 @@ namespace mineblocks::core {
         : App("Mineblocks", {0, 1, 0})
     {
     }
-
-    std::vector<engine::core::Stage> Mineblocks::setupStages()
-    {
-        return {engine::core::Stage::init};
-    }
-
-    void Mineblocks::init()
-    {
-        spdlog::info("Mineblocks init");
-    }
 } // namespace mineblocks::core
