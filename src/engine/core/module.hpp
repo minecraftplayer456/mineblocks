@@ -2,9 +2,11 @@
 
 #include <functional>
 #include <memory>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
+#include "engine/utils/graph.hpp"
 #include "engine/utils/type_info.hpp"
 
 namespace engine::core {
@@ -27,12 +29,10 @@ namespace engine::core {
         friend ModuleRegistry;
 
       public:
-        ModuleStage(Stage stage, StageFunction function,
-                    std::vector<utils::TypeId> require);
+        ModuleStage(Stage stage, StageFunction function);
 
         Stage m_stage;
         std::function<void()> m_function;
-        std::vector<utils::TypeId> m_require;
     };
 
     template <typename... Args>
@@ -48,31 +48,48 @@ namespace engine::core {
         }
     };
 
-    class Module {
+    class Module : public engine::utils::Node {
         friend ModuleRegistry;
 
       protected:
+        void addStage(Stage stage, const std::function<void(void)>& function);
+
+        void addSubmodule(Module* submodule);
+
         template <typename... Args>
-        void addStage(Stage stage, const std::function<void(void)>& function,
-                      Requires<Args...> require = {})
+        void require(Requires<Args...> require = {})
         {
-            m_stages.emplace_back(stage, function, require.get());
+            m_require = require.get();
         }
 
       private:
         std::vector<ModuleStage> m_stages;
+        std::vector<utils::TypeId> m_require;
+        std::vector<Module*> m_submodules;
     };
 
     class ModuleRegistry {
       public:
-        void registerModule(Module* module);
+        template <typename T,
+                  typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        void registerModule(T* module)
+        {
+            registerModule(std::shared_ptr<T>(module));
+        }
 
-        void sortStages();
+        template <typename T,
+                  typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        void registerModule(std::shared_ptr<T> module)
+        {
+            m_modules.insert(std::pair(utils::TypeInfo<Module>::getTypeId<T>(), module));
+        }
+
+        void sortRequirements();
 
         void callStage(Stage stage);
 
       private:
-        std::vector<std::shared_ptr<Module>> m_modules;
+        std::unordered_multimap<utils::TypeId, std::shared_ptr<Module>> m_modules;
         std::unordered_map<Stage, std::vector<ModuleStage>> m_stages;
     };
 } // namespace engine::core

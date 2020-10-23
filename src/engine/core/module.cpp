@@ -1,82 +1,72 @@
 #include "module.hpp"
 
-#include <spdlog/spdlog.h>
-
-#include <utility>
-
 namespace engine::core {
-    ModuleStage::ModuleStage(Stage stage, StageFunction function,
-                             std::vector<utils::TypeId> require)
+    ModuleStage::ModuleStage(Stage stage, StageFunction function)
         : m_stage(stage)
         , m_function(std::move(function))
-        , m_require(std::move(require))
     {
     }
 
-    void ModuleRegistry::registerModule(Module* module)
+    void Module::addStage(Stage stage, const std::function<void(void)>& function)
     {
-        m_modules.push_back(std::shared_ptr<Module>(module));
+        m_stages.emplace_back(stage, function);
     }
 
-    void ModuleRegistry::sortStages()
+    void Module::addSubmodule(Module* submodule)
     {
-        // std::unordered_map<int, ModuleStage> stages;
+        m_submodules.push_back(submodule);
+    }
 
-        for (const auto& module : m_modules) {
-            for (const auto& moduleStage : module->m_stages) {
+    void ModuleRegistry::sortRequirements()
+    {
+        for (const auto& [moduleType, module] : m_modules) {
+            for (const auto& submodule : module->m_submodules) {
+                registerModule(submodule);
+            }
+        }
 
-                if (!m_stages.contains(moduleStage.m_stage)) {
-                    m_stages[moduleStage.m_stage].push_back(moduleStage);
-                }
+        for (const auto& [moduleType, module] : m_modules) {
+            for (const auto& requireType : module->m_require) {
 
-                for (const auto& sortedStage : m_stages) {
+                const auto foundRequireTypes = m_modules.equal_range(requireType);
+                for (auto it = foundRequireTypes.first; it != foundRequireTypes.second;
+                     it++) {
+                    it->second->m_inNeighbours.push_back(
+                        std::static_pointer_cast<utils::Node>(it->second));
 
-                    for (int i = 0; i < sortedStage.second.size(); i++) {
-                        const auto& sortedModuleStage = sortedStage.second[i];
-
-                        for (auto requiresTypeId : moduleStage.m_require) {
-                            if (utils::TypeInfo<Module>::getTypeId<typeof(
-                                    sortedModuleStage)>() == requiresTypeId) {
-                                m_stages[moduleStage.m_stage].emplace(
-                                    m_stages[moduleStage.m_stage].begin() + i - 1,
-                                    moduleStage);
-                            }
-                            else {
-                                m_stages[moduleStage.m_stage].push_back(moduleStage);
-                            }
-                        }
-                    }
+                    module->m_outNeighbours.push_back(
+                        std::static_pointer_cast<utils::Node>(it->second));
                 }
             }
         }
 
-        /*for(const auto& module : m_modules){
-            for(auto& stageInModule : module->m_stages){
+        utils::Graph graph;
 
-                for(const auto& sortedStages : m_stages){
-                    for(auto sortedModules : sortedStages.second){
+        for (const auto& [_, module] : m_modules) {
+            graph.addNode(std::static_pointer_cast<utils::Node>(module));
+        }
 
-                    }
-                }
+        graph.sort();
+
+        std::vector<std::shared_ptr<utils::Node>> sortedNodes = graph.getNodes();
+        std::vector<std::shared_ptr<Module>> sortedModules;
+
+        sortedModules.reserve(sortedNodes.size());
+        for (const auto& node : sortedNodes) {
+            sortedModules.push_back(std::reinterpret_pointer_cast<Module>(node));
+        }
+        std::reverse(sortedModules.begin(), sortedModules.end());
+
+        for (const auto& module : sortedModules) {
+            for (const auto& moduleStage : module->m_stages) {
+                auto& stages = m_stages[moduleStage.m_stage];
+                stages.push_back(moduleStage);
             }
-        }*/
-
-        /*for (const auto& module : m_modules) {
-            for (const auto& stage : module->m_stages) {
-                auto& stages = m_stages[stage.m_stage];
-                stages.push_back(stage);
-            }
-        }*/
+        }
     }
 
     void ModuleRegistry::callStage(Stage stage)
     {
-        /*auto result = m_stages.equal_range(stage);
-
-        for(auto it = result.first; it != result.second; it++){
-            it->second.m_function();
-        }*/
-
         for (const auto& moduleStages : m_stages[stage]) {
             moduleStages.m_function();
         }

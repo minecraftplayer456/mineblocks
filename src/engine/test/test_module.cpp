@@ -5,11 +5,13 @@
 namespace engine::test {
     TestModule::TestModule()
     {
-        addStage<TestModule2>(core::Stage::Init, [this] { init(); });
+        addStage(core::Stage::Init, [this] { init(); });
         addStage(core::Stage::Input, [this] { input(); });
         addStage(core::Stage::Update, [this] { update(); });
         addStage(core::Stage::Render, [this] { render(); });
         addStage(core::Stage::Cleanup, [this] { cleanup(); });
+
+        addSubmodule(new TestModule4);
     }
 
     void TestModule::init()
@@ -44,6 +46,8 @@ namespace engine::test {
         addStage(core::Stage::Update, [this] { update(); });
         addStage(core::Stage::Render, [this] { render(); });
         addStage(core::Stage::Cleanup, [this] { cleanup(); });
+
+        require<TestModule>();
     }
 
     void TestModule2::init()
@@ -69,5 +73,77 @@ namespace engine::test {
     void TestModule2::cleanup()
     {
         spdlog::info("cleanup2");
+    }
+
+    TestModule3::TestModule3()
+    {
+        addStage(core::Stage::Init, [this] { init(); });
+        addStage(core::Stage::Input, [this] { input(); });
+        addStage(core::Stage::Update, [this] { update(); });
+        addStage(core::Stage::Render, [this] { render(); });
+        addStage(core::Stage::Cleanup, [this] { cleanup(); });
+
+        require<TestModule>();
+    }
+
+    void TestModule3::init()
+    {
+        spdlog::info("init3");
+    }
+
+    void TestModule3::input()
+    {
+        spdlog::info("input3");
+    }
+
+    void TestModule3::update()
+    {
+        spdlog::info("update3");
+    }
+
+    void TestModule3::render()
+    {
+        spdlog::info("render3");
+    }
+
+    void TestModule3::cleanup()
+    {
+        spdlog::info("cleanup3");
+    }
+
+    TestModule4::TestModule4()
+    {
+        addStage(core::Stage::Init, [this] { init(); });
+        addStage(core::Stage::Input, [this] { input(); });
+        addStage(core::Stage::Update, [this] { update(); });
+        addStage(core::Stage::Render, [this] { render(); });
+        addStage(core::Stage::Cleanup, [this] { cleanup(); });
+
+        require<TestModule2, TestModule3>();
+    }
+
+    void TestModule4::init()
+    {
+        spdlog::info("init4");
+    }
+
+    void TestModule4::input()
+    {
+        spdlog::info("input4");
+    }
+
+    void TestModule4::update()
+    {
+        spdlog::info("update4");
+    }
+
+    void TestModule4::render()
+    {
+        spdlog::info("render4");
+    }
+
+    void TestModule4::cleanup()
+    {
+        spdlog::info("cleanup4");
     }
 } // namespace engine::test

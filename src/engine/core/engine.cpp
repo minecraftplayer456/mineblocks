@@ -1,18 +1,26 @@
 #include "engine.hpp"
 
+#include <utility>
+
 #include "engine/test/test_module.hpp"
 
 namespace engine::core {
     Engine::Engine(App* app)
-        : m_app(app)
+        : m_app(std::shared_ptr<App>(app))
     {
-        m_moduleRegistry.registerModule(app);
-        m_moduleRegistry.registerModule(new engine::test::TestModule());
+        m_moduleRegistry.registerModule(m_app);
+
+        m_moduleRegistry.registerModule(new engine::test::TestModule);
+        m_moduleRegistry.registerModule(new engine::test::TestModule2);
+        m_moduleRegistry.registerModule(new engine::test::TestModule3);
+        // m_moduleRegistry.registerModule(new engine::test::TestModule4);
     }
 
     void Engine::run()
     {
         m_running = true;
+
+        m_moduleRegistry.sortRequirements();
 
         m_moduleRegistry.callStage(Stage::Init);
 
@@ -23,7 +31,7 @@ namespace engine::core {
 
             static int i = 0;
 
-            if (i >= 10) {
+            if (i >= 1000) {
                 requestStop();
             }
 
@@ -38,7 +46,7 @@ namespace engine::core {
         m_running = false;
     }
 
-    App* Engine::getApp() const
+    std::shared_ptr<App> Engine::getApp() const
     {
         return m_app;
     }
