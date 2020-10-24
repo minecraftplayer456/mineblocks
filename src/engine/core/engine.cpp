@@ -1,13 +1,12 @@
 #include "engine.hpp"
 
-#include <utility>
-
-#include "engine/test/test_module.hpp"
+#include "engine/devices/glfw.hpp"
 
 namespace engine::core {
     Engine::Engine(App* app)
         : m_app(app)
     {
+        addSubmodule<devices::Glfw>();
     }
 
     void Engine::run()

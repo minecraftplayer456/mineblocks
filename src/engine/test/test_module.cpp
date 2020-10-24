@@ -45,7 +45,6 @@ namespace engine::test {
         spdlog::info("Init3");
     }
 
-
     TestModule4::TestModule4()
     {
         addStage(core::ModuleLifecycle::Init, [this] { init(); });
