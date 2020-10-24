@@ -27,6 +27,8 @@ namespace engine::core {
         [[nodiscard]] uint32_t getFps() const;
 
       private:
+        void runLoop();
+
         App* m_app;
         ModuleManager m_moduleManager;
 

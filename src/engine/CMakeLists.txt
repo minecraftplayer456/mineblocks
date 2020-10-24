@@ -8,8 +8,6 @@ add_library(engine
 
         maths/time.cpp
 
-        test/test_module.cpp
-
         utils/graph.cpp
         utils/type_info.hpp
         utils/version.cpp)

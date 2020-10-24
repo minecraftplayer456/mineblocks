@@ -1,5 +1,7 @@
 #include "engine.hpp"
 
+#include <spdlog/spdlog.h>
+
 #include "engine/devices/glfw.hpp"
 
 namespace engine::core {
@@ -11,14 +13,32 @@ namespace engine::core {
 
     void Engine::run()
     {
+        try {
+            runLoop();
+        }
+        catch (const std::exception& e) {
+            spdlog::critical("Fatal exception: " + std::string(e.what()));
+        }
+    }
+
+    void Engine::runLoop()
+    {
         m_running = true;
+
+        spdlog::set_level(spdlog::level::trace);
+
+        spdlog::info("Starting " + m_app->getName() + " " +
+                     m_app->getVersion().toString());
 
         m_moduleManager.registerModule(m_app);
         m_moduleManager.registerModule(this);
 
-        m_moduleManager.init();
+        spdlog::debug("Initializing modules");
 
+        m_moduleManager.init();
         m_moduleManager.callStage(ModuleLifecycle::Init);
+
+        spdlog::debug("Initialized modules");
 
         while (m_running) {
             m_elapsedUpdate.setInterval(maths::Time::seconds(1.0f / m_upsLimit));
@@ -26,12 +46,22 @@ namespace engine::core {
 
             auto elapsedUpdate = m_elapsedUpdate.getElapsed();
             if (elapsedUpdate != 0) {
+                static int updates = 0;
+
                 m_ups.update(maths::Time::now());
 
                 m_moduleManager.callStage(ModuleLifecycle::Input);
                 m_moduleManager.callStage(ModuleLifecycle::Update);
 
                 m_deltaUpdate.update();
+
+                if (updates >= 128) {
+                    spdlog::debug("Ups: " + std::to_string(m_ups.value));
+                    spdlog::debug("Fps: " + std::to_string(m_fps.value));
+                    updates = 0;
+                }
+
+                updates++;
             }
 
             auto elapsedRender = m_elapsedRender.getElapsed();
@@ -44,7 +74,12 @@ namespace engine::core {
             }
         }
 
+        spdlog::info("Stopping");
+        spdlog::debug("Cleaning up");
+
         m_moduleManager.callStage(ModuleLifecycle::Cleanup);
+
+        spdlog::debug("Cleaned up");
     }
 
     void Engine::requestStop()

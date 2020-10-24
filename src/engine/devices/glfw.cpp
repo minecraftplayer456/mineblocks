@@ -18,6 +18,8 @@ namespace engine::devices {
 
     void Glfw::init()
     {
+        spdlog::debug("Initialize glfw");
+
         glfwSetErrorCallback(glfwErrorCallback);
 
         checkGlfw(glfwInit(), "Failed to initialize glfw");
@@ -28,19 +30,21 @@ namespace engine::devices {
         glfwWindowHint(GLFW_STENCIL_BITS, 8);
         glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 
-        spdlog::info("Glfw init");
+        spdlog::trace("Initialized glfw");
     }
 
     void Glfw::input()
     {
         glfwPollEvents();
-        spdlog::info("Glfw input");
     }
 
     void Glfw::cleanup()
     {
+        spdlog::debug("Cleanup glfw");
+
         glfwTerminate();
-        spdlog::info("Glfw cleanup");
+
+        spdlog::trace("Cleaned up glfw");
     }
 
     std::string Glfw::glfwResultToString(int32_t result)
