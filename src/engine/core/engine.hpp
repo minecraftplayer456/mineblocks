@@ -12,14 +12,14 @@ namespace engine::core {
 
         void requestStop();
 
-        [[nodiscard]] std::shared_ptr<App> getApp() const;
+        [[nodiscard]] App* getApp() const;
 
         [[nodiscard]] ModuleRegistry getModuleRegistry() const;
 
         [[nodiscard]] bool isRunning() const;
 
       private:
-        std::shared_ptr<App> m_app;
+        App* m_app;
 
         ModuleRegistry m_moduleRegistry;
 

@@ -10,6 +10,7 @@
 #include "engine/utils/type_info.hpp"
 
 namespace engine::core {
+    class Engine;
     class ModuleRegistry;
     class Module;
 
@@ -52,6 +53,8 @@ namespace engine::core {
         friend ModuleRegistry;
 
       protected:
+        Engine* m_engine;
+
         void addStage(Stage stage, const std::function<void(void)>& function);
 
         template <typename T,
@@ -100,7 +103,7 @@ namespace engine::core {
             return module;
         }
 
-        void sortRequirements();
+        void initialize(Engine* engine);
 
         void callStage(Stage stage);
 

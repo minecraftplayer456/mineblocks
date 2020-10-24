@@ -21,7 +21,7 @@ namespace engine::core {
         }
     }
 
-    void ModuleRegistry::sortRequirements()
+    void ModuleRegistry::initialize(Engine* engine)
     {
         for (const auto& [_, module] : m_modules) {
             registerSubmodules(module);
@@ -60,6 +60,8 @@ namespace engine::core {
         std::reverse(sortedModules.begin(), sortedModules.end());
 
         for (const auto& module : sortedModules) {
+            module->m_engine = engine;
+
             for (const auto& moduleStage : module->m_stages) {
                 auto& stages = m_stages[moduleStage.m_stage];
                 stages.push_back(moduleStage);

@@ -6,7 +6,7 @@
 
 namespace engine::core {
     Engine::Engine(App* app)
-        : m_app(std::shared_ptr<App>(app))
+        : m_app(app)
     {
         m_moduleRegistry.registerModule(m_app);
 
@@ -17,7 +17,7 @@ namespace engine::core {
     {
         m_running = true;
 
-        m_moduleRegistry.sortRequirements();
+        m_moduleRegistry.initialize(this);
 
         m_moduleRegistry.callStage(Stage::Init);
 
@@ -25,14 +25,6 @@ namespace engine::core {
             m_moduleRegistry.callStage(Stage::Input);
             m_moduleRegistry.callStage(Stage::Update);
             m_moduleRegistry.callStage(Stage::Render);
-
-            static int i = 0;
-
-            if (i >= 1000) {
-                requestStop();
-            }
-
-            i++;
         }
 
         m_moduleRegistry.callStage(Stage::Cleanup);
@@ -43,7 +35,7 @@ namespace engine::core {
         m_running = false;
     }
 
-    std::shared_ptr<App> Engine::getApp() const
+    App* Engine::getApp() const
     {
         return m_app;
     }

@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <engine/core/engine.hpp>
+
 namespace engine::test {
     TestModule::TestModule()
     {
@@ -143,6 +145,7 @@ namespace engine::test {
     void TestModule4::render()
     {
         spdlog::info("render4");
+        m_engine->requestStop();
     }
 
     void TestModule4::cleanup()
