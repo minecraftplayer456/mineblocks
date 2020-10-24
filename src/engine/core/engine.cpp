@@ -56,8 +56,10 @@ namespace engine::core {
                 m_deltaUpdate.update();
 
                 if (updates >= 128) {
-                    spdlog::debug("Ups: " + std::to_string(m_ups.value));
-                    spdlog::debug("Fps: " + std::to_string(m_fps.value));
+                    spdlog::trace("Ups Delta: " + std::to_string(m_deltaUpdate.change.asMilliSeconds()));
+                    spdlog::trace("Ups: " + std::to_string(m_ups.value));
+                    spdlog::trace("Fps Delta: " + std::to_string(m_deltaRender.change.asMilliSeconds()));
+                    spdlog::trace("Fps: " + std::to_string(m_fps.value));
                     updates = 0;
                 }
 
