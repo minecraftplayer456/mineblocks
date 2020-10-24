@@ -4,6 +4,8 @@ add_library(engine
         core/engine.cpp
         core/module.cpp
 
+        maths/time.cpp
+
         test/test_module.cpp
 
         utils/graph.cpp
