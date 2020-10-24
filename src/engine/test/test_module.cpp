@@ -12,6 +12,7 @@ namespace engine::test {
         addStage(core::Stage::Cleanup, [this] { cleanup(); });
 
         addSubmodule(new TestModule4);
+        addSubmodule(new TestModule2);
     }
 
     void TestModule::init()
@@ -48,6 +49,8 @@ namespace engine::test {
         addStage(core::Stage::Cleanup, [this] { cleanup(); });
 
         require<TestModule>();
+
+        addSubmodule(new TestModule3);
     }
 
     void TestModule2::init()

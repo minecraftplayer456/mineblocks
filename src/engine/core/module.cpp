@@ -12,20 +12,22 @@ namespace engine::core {
         m_stages.emplace_back(stage, function);
     }
 
-    void Module::addSubmodule(Module* submodule)
+    void ModuleRegistry::registerSubmodules(const std::shared_ptr<Module>& module)
     {
-        m_submodules.push_back(submodule);
+        for (const auto& submodule : module->m_submodules) {
+            auto submodulePtr = registerModule(submodule.first,
+                                               std::shared_ptr<Module>(submodule.second));
+            registerSubmodules(submodulePtr);
+        }
     }
 
     void ModuleRegistry::sortRequirements()
     {
-        for (const auto& [moduleType, module] : m_modules) {
-            for (const auto& submodule : module->m_submodules) {
-                registerModule(submodule);
-            }
+        for (const auto& [_, module] : m_modules) {
+            registerSubmodules(module);
         }
 
-        for (const auto& [moduleType, module] : m_modules) {
+        for (const auto& [_, module] : m_modules) {
             for (const auto& requireType : module->m_require) {
 
                 const auto foundRequireTypes = m_modules.equal_range(requireType);

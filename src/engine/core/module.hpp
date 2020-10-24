@@ -54,7 +54,13 @@ namespace engine::core {
       protected:
         void addStage(Stage stage, const std::function<void(void)>& function);
 
-        void addSubmodule(Module* submodule);
+        template <typename T,
+                  typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        void addSubmodule(T* submodule)
+        {
+            m_submodules.insert(
+                std::pair(utils::TypeInfo<Module>::getTypeId<T>(), submodule));
+        }
 
         template <typename... Args>
         void require(Requires<Args...> require = {})
@@ -65,23 +71,33 @@ namespace engine::core {
       private:
         std::vector<ModuleStage> m_stages;
         std::vector<utils::TypeId> m_require;
-        std::vector<Module*> m_submodules;
+        std::unordered_map<utils::TypeId, Module*> m_submodules;
     };
 
     class ModuleRegistry {
       public:
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        void registerModule(T* module)
+        std::shared_ptr<Module> registerModule(T* module)
         {
-            registerModule(std::shared_ptr<T>(module));
+            auto ptr = std::shared_ptr<T>(module);
+            registerModule(ptr);
+            return ptr;
         }
 
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        void registerModule(std::shared_ptr<T> module)
+        std::shared_ptr<Module> registerModule(std::shared_ptr<T> module)
         {
-            m_modules.insert(std::pair(utils::TypeInfo<Module>::getTypeId<T>(), module));
+            registerModule(utils::TypeInfo<Module>::getTypeId<T>(), module);
+            return module;
+        }
+
+        std::shared_ptr<Module> registerModule(utils::TypeId typeId,
+                                               const std::shared_ptr<Module>& module)
+        {
+            m_modules.insert(std::pair(typeId, module));
+            return module;
         }
 
         void sortRequirements();
@@ -89,6 +105,8 @@ namespace engine::core {
         void callStage(Stage stage);
 
       private:
+        void registerSubmodules(const std::shared_ptr<Module>& module);
+
         std::unordered_multimap<utils::TypeId, std::shared_ptr<Module>> m_modules;
         std::unordered_map<Stage, std::vector<ModuleStage>> m_stages;
     };

@@ -11,9 +11,6 @@ namespace engine::core {
         m_moduleRegistry.registerModule(m_app);
 
         m_moduleRegistry.registerModule(new engine::test::TestModule);
-        m_moduleRegistry.registerModule(new engine::test::TestModule2);
-        m_moduleRegistry.registerModule(new engine::test::TestModule3);
-        // m_moduleRegistry.registerModule(new engine::test::TestModule4);
     }
 
     void Engine::run()
