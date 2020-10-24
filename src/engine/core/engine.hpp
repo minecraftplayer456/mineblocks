@@ -5,7 +5,7 @@
 #include "engine/maths/time.hpp"
 
 namespace engine::core {
-    class Engine : public Module {
+    class Engine {
       public:
         explicit Engine(App* app);
 

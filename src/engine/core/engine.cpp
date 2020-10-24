@@ -2,14 +2,9 @@
 
 #include <spdlog/spdlog.h>
 
-#include "engine/devices/glfw.hpp"
-
 namespace engine::core {
     Engine::Engine(App* app)
-        : m_app(app)
-    {
-        addSubmodule<devices::Glfw>();
-    }
+        : m_app(app) {}
 
     void Engine::run()
     {
@@ -31,7 +26,6 @@ namespace engine::core {
                      m_app->getVersion().toString());
 
         m_moduleManager.registerModule(m_app);
-        m_moduleManager.registerModule(this);
 
         spdlog::debug("Initializing modules");
 
@@ -61,6 +55,7 @@ namespace engine::core {
                     spdlog::trace("Fps Delta: " + std::to_string(m_deltaRender.change.asMilliSeconds()));
                     spdlog::trace("Fps: " + std::to_string(m_fps.value));
                     updates = 0;
+                    requestStop();
                 }
 
                 updates++;
