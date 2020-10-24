@@ -8,10 +8,6 @@ namespace engine::test {
         TestModule();
 
         void init();
-        void input();
-        void update();
-        void render();
-        void cleanup();
     };
 
     class TestModule2 : public core::Module {
@@ -19,10 +15,6 @@ namespace engine::test {
         TestModule2();
 
         void init();
-        void input();
-        void update();
-        void render();
-        void cleanup();
     };
 
     class TestModule3 : public core::Module {
@@ -30,10 +22,6 @@ namespace engine::test {
         TestModule3();
 
         void init();
-        void input();
-        void update();
-        void render();
-        void cleanup();
     };
 
     class TestModule4 : public core::Module {
@@ -41,9 +29,5 @@ namespace engine::test {
         TestModule4();
 
         void init();
-        void input();
-        void update();
-        void render();
-        void cleanup();
     };
 } // namespace engine::test

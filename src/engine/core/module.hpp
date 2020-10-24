@@ -10,11 +10,9 @@
 #include "engine/utils/type_info.hpp"
 
 namespace engine::core {
-    class Engine;
-    class ModuleRegistry;
-    class Module;
+    class ModuleManager;
 
-    enum class Stage {
+    enum class ModuleLifecycle {
         Init,
 
         Input,
@@ -24,93 +22,93 @@ namespace engine::core {
         Cleanup
     };
 
-    using StageFunction = std::function<void()>;
-
     class ModuleStage {
-        friend ModuleRegistry;
-
       public:
-        ModuleStage(Stage stage, StageFunction function);
-
-        Stage m_stage;
+        ModuleLifecycle m_stage{};
         std::function<void()> m_function;
     };
 
-    template <typename... Args>
-    class Requires {
-      public:
-        [[nodiscard]] std::vector<engine::utils::TypeId> get() const
-        {
-            std::vector<engine::utils::TypeId> require;
-            (require.emplace_back(
-                 engine::utils::TypeInfo<Module>::template getTypeId<Args>()),
-             ...);
-            return require;
-        }
-    };
-
-    class Module : public engine::utils::Node {
-        friend ModuleRegistry;
+    class Module : public utils::Node {
+        friend ModuleManager;
 
       protected:
-        Engine* m_engine;
-
-        void addStage(Stage stage, const std::function<void(void)>& function);
+        template <typename T,
+                  typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        void addSubmodule()
+        {
+            auto typeId = utils::TypeInfo<Module>::getTypeId<T>();
+            auto module = std::make_shared<T>();
+            m_submodules[typeId] = module;
+        }
 
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        void addSubmodule(T* submodule)
+        void require()
         {
-            m_submodules.insert(
-                std::pair(utils::TypeInfo<Module>::getTypeId<T>(), submodule));
+            m_require.push_back(utils::TypeInfo<Module>::getTypeId<T>());
         }
 
-        template <typename... Args>
-        void require(Requires<Args...> require = {})
+        template <typename T,
+                  typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        std::shared_ptr<T> getModule();
+
+        void addStage(ModuleLifecycle stage, std::function<void()> function)
         {
-            m_require = require.get();
+            ModuleStage moduleStage;
+            moduleStage.m_stage = stage;
+            moduleStage.m_function = std::move(function);
+            m_stages.push_back(moduleStage);
         }
 
       private:
+        ModuleManager* m_moduleManager;
+
         std::vector<ModuleStage> m_stages;
         std::vector<utils::TypeId> m_require;
-        std::unordered_map<utils::TypeId, Module*> m_submodules;
+        std::unordered_map<utils::TypeId, std::shared_ptr<Module>> m_submodules;
     };
 
-    class ModuleRegistry {
+    class ModuleManager {
       public:
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        std::shared_ptr<Module> registerModule(T* module)
+        void registerModule(T* module)
         {
-            auto ptr = std::shared_ptr<T>(module);
-            registerModule(ptr);
-            return ptr;
+            auto typeId = utils::TypeInfo<Module>::getTypeId<T>();
+            auto modulePtr = std::shared_ptr<Module>(module);
+            addModules(modulePtr->m_submodules);
+            m_modules[typeId] = modulePtr;
+        }
+
+        void addModules(
+            const std::unordered_map<utils::TypeId, std::shared_ptr<Module>>& modules)
+        {
+            for (const auto& [moduleType, module] : modules) {
+                addModules(module->m_submodules);
+                m_modules[moduleType] = module;
+            }
         }
 
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        std::shared_ptr<Module> registerModule(std::shared_ptr<T> module)
+        std::shared_ptr<T> getModule()
         {
-            registerModule(utils::TypeInfo<Module>::getTypeId<T>(), module);
-            return module;
+            auto typeId = utils::TypeInfo<Module>::getTypeId<T>();
+            return std::reinterpret_pointer_cast<T>(m_modules[typeId]);
         }
 
-        std::shared_ptr<Module> registerModule(utils::TypeId typeId,
-                                               const std::shared_ptr<Module>& module)
-        {
-            m_modules.insert(std::pair(typeId, module));
-            return module;
-        }
+        void init();
 
-        void initialize(Engine* engine);
-
-        void callStage(Stage stage);
+        void callStage(ModuleLifecycle stage);
 
       private:
-        void registerSubmodules(const std::shared_ptr<Module>& module);
-
-        std::unordered_multimap<utils::TypeId, std::shared_ptr<Module>> m_modules;
-        std::unordered_map<Stage, std::vector<ModuleStage>> m_stages;
+        std::unordered_map<utils::TypeId, std::shared_ptr<Module>> m_modules;
+        std::unordered_multimap<ModuleLifecycle, ModuleStage> m_stages;
     };
+
+    template <typename T, typename>
+    std::shared_ptr<T> Module::getModule()
+    {
+        return m_moduleManager->getModule<T>();
+    }
 } // namespace engine::core

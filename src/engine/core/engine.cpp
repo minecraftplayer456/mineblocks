@@ -8,18 +8,18 @@ namespace engine::core {
     Engine::Engine(App* app)
         : m_app(app)
     {
-        m_moduleRegistry.registerModule(m_app);
-
-        m_moduleRegistry.registerModule(new engine::test::TestModule);
     }
 
     void Engine::run()
     {
         m_running = true;
 
-        m_moduleRegistry.initialize(this);
+        m_moduleManager.registerModule(m_app);
+        m_moduleManager.registerModule(this);
 
-        m_moduleRegistry.callStage(Stage::Init);
+        m_moduleManager.init();
+
+        m_moduleManager.callStage(ModuleLifecycle::Init);
 
         while (m_running) {
             m_elapsedUpdate.setInterval(maths::Time::seconds(1.0f / m_upsLimit));
@@ -29,8 +29,8 @@ namespace engine::core {
             if (elapsedUpdate != 0) {
                 m_ups.update(maths::Time::now());
 
-                m_moduleRegistry.callStage(Stage::Input);
-                m_moduleRegistry.callStage(Stage::Update);
+                m_moduleManager.callStage(ModuleLifecycle::Input);
+                m_moduleManager.callStage(ModuleLifecycle::Update);
 
                 m_deltaUpdate.update();
             }
@@ -39,13 +39,13 @@ namespace engine::core {
             if (elapsedRender != 0) {
                 m_fps.update(maths::Time::now());
 
-                m_moduleRegistry.callStage(Stage::Render);
+                m_moduleManager.callStage(ModuleLifecycle::Render);
 
                 m_deltaRender.update();
             }
         }
 
-        m_moduleRegistry.callStage(Stage::Cleanup);
+        m_moduleManager.callStage(ModuleLifecycle::Cleanup);
     }
 
     void Engine::requestStop()
@@ -58,9 +58,9 @@ namespace engine::core {
         return m_app;
     }
 
-    ModuleRegistry Engine::getModuleRegistry() const
+    ModuleManager Engine::getModuleManager() const
     {
-        return m_moduleRegistry;
+        return m_moduleManager;
     }
 
     bool Engine::isRunning() const

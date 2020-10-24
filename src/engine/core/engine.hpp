@@ -5,7 +5,7 @@
 #include "engine/maths/time.hpp"
 
 namespace engine::core {
-    class Engine {
+    class Engine : public Module {
       public:
         explicit Engine(App* app);
 
@@ -14,21 +14,21 @@ namespace engine::core {
         void requestStop();
 
         [[nodiscard]] App* getApp() const;
-        [[nodiscard]] ModuleRegistry getModuleRegistry() const;
+        [[nodiscard]] ModuleManager getModuleManager() const;
 
         [[nodiscard]] bool isRunning() const;
 
         void setUpsLimit(float ups);
         void setFpsLimit(float fps);
 
-        const maths::Time& getDeltaUpdate() const;
-        const maths::Time& getDeltaRender() const;
-        uint32_t getUps() const;
-        uint32_t getFps() const;
+        [[nodiscard]] const maths::Time& getDeltaUpdate() const;
+        [[nodiscard]] const maths::Time& getDeltaRender() const;
+        [[nodiscard]] uint32_t getUps() const;
+        [[nodiscard]] uint32_t getFps() const;
 
       private:
         App* m_app;
-        ModuleRegistry m_moduleRegistry;
+        ModuleManager m_moduleManager;
 
         bool m_running = false;
 
