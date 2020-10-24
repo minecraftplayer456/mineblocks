@@ -7,14 +7,14 @@
 namespace engine::test {
     TestModule::TestModule()
     {
-        addStage(core::Stage::Init, [this] { init(); });
-        addStage(core::Stage::Input, [this] { input(); });
+        // addStage(core::Stage::Init, [this] { init(); });
+        // addStage(core::Stage::Input, [this] { input(); });
         addStage(core::Stage::Update, [this] { update(); });
         addStage(core::Stage::Render, [this] { render(); });
-        addStage(core::Stage::Cleanup, [this] { cleanup(); });
+        // addStage(core::Stage::Cleanup, [this] { cleanup(); });
 
-        addSubmodule(new TestModule4);
-        addSubmodule(new TestModule2);
+        // addSubmodule(new TestModule4);
+        // addSubmodule(new TestModule2);
     }
 
     void TestModule::init()
@@ -29,12 +29,32 @@ namespace engine::test {
 
     void TestModule::update()
     {
-        spdlog::info("update");
+        // spdlog::info("update");
+        static int i = 0;
+
+        if (i >= 64) {
+            spdlog::info("Delta update: " +
+                         std::to_string(m_engine->getDeltaUpdate().asMilliSeconds()));
+            spdlog::info("Ups:" + std::to_string(m_engine->getUps()));
+            i = 0;
+        }
+
+        i++;
     }
 
     void TestModule::render()
     {
-        spdlog::info("render");
+        // spdlog::info("render");
+        static int i = 0;
+
+        if (i >= 64) {
+            spdlog::info("Delta render: " +
+                         std::to_string(m_engine->getDeltaRender().asMilliSeconds()));
+            spdlog::info("Fps:" + std::to_string(m_engine->getFps()));
+            i = 0;
+        }
+
+        i++;
     }
 
     void TestModule::cleanup()

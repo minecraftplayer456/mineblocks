@@ -6,6 +6,8 @@
 namespace engine::maths {
     class Time {
       public:
+        Time() = default;
+
         template <typename Rep, typename Period>
         constexpr Time(const std::chrono::duration<Rep, Period>& duration)
             : m_value(
@@ -109,7 +111,7 @@ namespace engine::maths {
         Time m_interval;
     };
 
-    class Delta {
+    class DeltaTime {
       public:
         void update();
 

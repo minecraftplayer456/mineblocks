@@ -22,9 +22,27 @@ namespace engine::core {
         m_moduleRegistry.callStage(Stage::Init);
 
         while (m_running) {
-            m_moduleRegistry.callStage(Stage::Input);
-            m_moduleRegistry.callStage(Stage::Update);
-            m_moduleRegistry.callStage(Stage::Render);
+            m_elapsedUpdate.setInterval(maths::Time::seconds(1.0f / m_upsLimit));
+            m_elapsedRender.setInterval(maths::Time::seconds(1.0f / m_fpsLimit));
+
+            auto elapsedUpdate = m_elapsedUpdate.getElapsed();
+            if (elapsedUpdate != 0) {
+                m_ups.update(maths::Time::now());
+
+                m_moduleRegistry.callStage(Stage::Input);
+                m_moduleRegistry.callStage(Stage::Update);
+
+                m_deltaUpdate.update();
+            }
+
+            auto elapsedRender = m_elapsedRender.getElapsed();
+            if (elapsedRender != 0) {
+                m_fps.update(maths::Time::now());
+
+                m_moduleRegistry.callStage(Stage::Render);
+
+                m_deltaRender.update();
+            }
         }
 
         m_moduleRegistry.callStage(Stage::Cleanup);
@@ -48,5 +66,35 @@ namespace engine::core {
     bool Engine::isRunning() const
     {
         return m_running;
+    }
+
+    void Engine::setUpsLimit(float ups)
+    {
+        m_upsLimit = ups;
+    }
+
+    void Engine::setFpsLimit(float fps)
+    {
+        m_fpsLimit = fps;
+    }
+
+    const maths::Time& Engine::getDeltaUpdate() const
+    {
+        return m_deltaUpdate.change;
+    }
+
+    const maths::Time& Engine::getDeltaRender() const
+    {
+        return m_deltaRender.change;
+    }
+
+    uint32_t Engine::getUps() const
+    {
+        return m_ups.value;
+    }
+
+    uint32_t Engine::getFps() const
+    {
+        return m_fps.value;
     }
 } // namespace engine::core

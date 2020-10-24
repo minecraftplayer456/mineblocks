@@ -160,6 +160,10 @@ namespace engine::maths {
 
     uint32_t ElapsedTime::getElapsed()
     {
+        if (m_interval.asMicroSeconds<int>() < 0) {
+            return -1;
+        }
+
         auto now = Time::now();
         auto elapsed =
             static_cast<uint32_t>(std::floor((now - m_startTime) / m_interval));
@@ -171,7 +175,7 @@ namespace engine::maths {
         return elapsed;
     }
 
-    void Delta::update()
+    void DeltaTime::update()
     {
         currentTime = Time::now();
         change = currentTime - lastTime;
