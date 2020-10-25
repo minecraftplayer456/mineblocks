@@ -7,14 +7,25 @@
 namespace engine::core {
     class Engine {
       public:
-        explicit Engine(App* app);
+        static Engine* get();
+
+        void run(App* app);
+
+        ModuleManager* getModuleManager();
+
+      private:
+        ModuleManager m_moduleManager;
+    };
+
+    class EngineModule : public Module{
+      public:
+        EngineModule(App* app, ModuleManager* moduleManager);
 
         void run();
 
         void requestStop();
 
         [[nodiscard]] App* getApp() const;
-        [[nodiscard]] ModuleManager getModuleManager() const;
 
         [[nodiscard]] bool isRunning() const;
 
@@ -27,10 +38,8 @@ namespace engine::core {
         [[nodiscard]] uint32_t getFps() const;
 
       private:
-        void runLoop();
-
         App* m_app;
-        ModuleManager m_moduleManager;
+        ModuleManager* m_moduleManager;
 
         bool m_running = false;
 

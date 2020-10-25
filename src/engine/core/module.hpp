@@ -34,11 +34,21 @@ namespace engine::core {
       protected:
         template <typename T,
                   typename = std::enable_if<std::is_base_of<Module, T>::value>>
-        void addSubmodule()
+        std::shared_ptr<T> addSubmodule()
         {
             auto typeId = utils::TypeInfo<Module>::getTypeId<T>();
             auto module = std::make_shared<T>();
             m_submodules[typeId] = module;
+            return module;
+        }
+
+        template <typename T,
+            typename = std::enable_if<std::is_base_of<Module, T>::value>>
+        std::shared_ptr<T> addSubmodule(T* module){
+            auto typeId = utils::TypeInfo<Module>::getTypeId<T>();
+            auto modulePtr = std::shared_ptr<T>(module);
+            m_submodules[typeId] = modulePtr;
+            return modulePtr;
         }
 
         template <typename T,

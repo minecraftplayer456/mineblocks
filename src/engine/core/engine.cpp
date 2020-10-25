@@ -3,36 +3,53 @@
 #include <spdlog/spdlog.h>
 
 namespace engine::core {
-    Engine::Engine(App* app)
-        : m_app(app) {}
-
-    void Engine::run()
+    Engine* Engine::get()
     {
+        static Engine e;
+        return &e;
+    }
+
+    void Engine::run(App* app)
+    {
+        spdlog::set_level(spdlog::level::trace);
+
         try {
-            runLoop();
+            m_moduleManager = ModuleManager();
+            auto engineModule = new EngineModule(app, &m_moduleManager);
+
+            engineModule->run();
         }
         catch (const std::exception& e) {
             spdlog::critical("Fatal exception: " + std::string(e.what()));
         }
     }
 
-    void Engine::runLoop()
+    ModuleManager* Engine::getModuleManager()
     {
-        m_running = true;
+            return &m_moduleManager;
+    }
 
-        spdlog::set_level(spdlog::level::trace);
+    EngineModule::EngineModule(App* app, ModuleManager* moduleManager)
+    : m_app(app), m_moduleManager(moduleManager) {}
 
+    void EngineModule::run()
+    {
         spdlog::info("Starting " + m_app->getName() + " " +
                      m_app->getVersion().toString());
 
-        m_moduleManager.registerModule(m_app);
+        m_moduleManager->registerModule(m_app);
+        m_moduleManager->registerModule(this);
 
         spdlog::debug("Initializing modules");
 
-        m_moduleManager.init();
-        m_moduleManager.callStage(ModuleLifecycle::Init);
+        m_moduleManager->init();
+        m_moduleManager->callStage(ModuleLifecycle::Init);
 
         spdlog::debug("Initialized modules");
+
+        m_running = true;
+
+        spdlog::debug("Run game loop");
 
         while (m_running) {
             m_elapsedUpdate.setInterval(maths::Time::seconds(1.0f / m_upsLimit));
@@ -44,8 +61,8 @@ namespace engine::core {
 
                 m_ups.update(maths::Time::now());
 
-                m_moduleManager.callStage(ModuleLifecycle::Input);
-                m_moduleManager.callStage(ModuleLifecycle::Update);
+                m_moduleManager->callStage(ModuleLifecycle::Input);
+                m_moduleManager->callStage(ModuleLifecycle::Update);
 
                 m_deltaUpdate.update();
 
@@ -65,7 +82,7 @@ namespace engine::core {
             if (elapsedRender != 0) {
                 m_fps.update(maths::Time::now());
 
-                m_moduleManager.callStage(ModuleLifecycle::Render);
+                m_moduleManager->callStage(ModuleLifecycle::Render);
 
                 m_deltaRender.update();
             }
@@ -74,57 +91,52 @@ namespace engine::core {
         spdlog::info("Stopping");
         spdlog::debug("Cleaning up");
 
-        m_moduleManager.callStage(ModuleLifecycle::Cleanup);
+        m_moduleManager->callStage(ModuleLifecycle::Cleanup);
 
         spdlog::debug("Cleaned up");
     }
 
-    void Engine::requestStop()
+    void EngineModule::requestStop()
     {
         m_running = false;
     }
 
-    App* Engine::getApp() const
+    App* EngineModule::getApp() const
     {
         return m_app;
     }
 
-    ModuleManager Engine::getModuleManager() const
-    {
-        return m_moduleManager;
-    }
-
-    bool Engine::isRunning() const
+    bool EngineModule::isRunning() const
     {
         return m_running;
     }
 
-    void Engine::setUpsLimit(float ups)
+    void EngineModule::setUpsLimit(float ups)
     {
         m_upsLimit = ups;
     }
 
-    void Engine::setFpsLimit(float fps)
+    void EngineModule::setFpsLimit(float fps)
     {
         m_fpsLimit = fps;
     }
 
-    const maths::Time& Engine::getDeltaUpdate() const
+    const maths::Time& EngineModule::getDeltaUpdate() const
     {
         return m_deltaUpdate.change;
     }
 
-    const maths::Time& Engine::getDeltaRender() const
+    const maths::Time& EngineModule::getDeltaRender() const
     {
         return m_deltaRender.change;
     }
 
-    uint32_t Engine::getUps() const
+    uint32_t EngineModule::getUps() const
     {
         return m_ups.value;
     }
 
-    uint32_t Engine::getFps() const
+    uint32_t EngineModule::getFps() const
     {
         return m_fps.value;
     }

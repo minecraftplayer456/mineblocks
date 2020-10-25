@@ -6,9 +6,7 @@
 
 int main(int argc, char** argv)
 {
-    engine::core::Engine engine(new mineblocks::core::Mineblocks);
-
-    engine.run();
+    engine::core::Engine::get()->run(new mineblocks::core::Mineblocks);
 
     return 0;
 }
