@@ -2,18 +2,26 @@
 
 #include <memory>
 
+#include <spdlog/spdlog.h>
+
+#include "devices/window.hpp"
 #include "maths/time.hpp"
 #include "state/game_state.hpp"
 
 namespace mineblocks {
     class Application {
       public:
+        Application();
+
         void run();
 
-        template <typename T, typename = std::enable_if<std::is_convertible<T, GameState>::value>>
-        void setGameState();
+        template <typename T,
+                  typename = std::enable_if<std::is_convertible<T, GameState>::value>>
+        void updateGameState();
 
         std::shared_ptr<GameState> getGameState();
+
+        [[nodiscard]] Window getWindow() const;
 
         [[nodiscard]] bool isRunning() const;
         void requestStop();
@@ -29,6 +37,8 @@ namespace mineblocks {
       private:
         bool m_running = false;
 
+        Window m_window;
+
         std::shared_ptr<GameState> m_currentState;
 
         DeltaTime m_deltaUpdate, m_deltaRender;
@@ -43,4 +53,13 @@ namespace mineblocks {
         void update();
         void render();
     };
+
+    template <typename T, typename>
+    void Application::updateGameState()
+    {
+        spdlog::debug("Update game state");
+        m_currentState->cleanup();
+        m_currentState = std::make_shared<T>(this);
+        m_currentState->init();
+    }
 } // namespace mineblocks

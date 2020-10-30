@@ -2,9 +2,11 @@
 
 #include "state/game_state.hpp"
 
-namespace mineblocks{
-    class PlayingState : public GameState{
+namespace mineblocks {
+    class PlayingState : public GameState {
       public:
+        explicit PlayingState(Application* app);
+
         void init() override;
         void cleanup() override;
 
@@ -12,4 +14,4 @@ namespace mineblocks{
         void update() override;
         void render() override;
     };
-}
+} // namespace mineblocks

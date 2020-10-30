@@ -2,9 +2,14 @@
 
 #include <stdexcept>
 
-#include <spdlog/spdlog.h>
+#include "state/playing_state.hpp"
 
-namespace mineblocks{
+namespace mineblocks {
+    Application::Application()
+    {
+        m_currentState = std::make_shared<PlayingState>(this);
+    }
+
     void Application::run()
     {
         try {
@@ -13,13 +18,18 @@ namespace mineblocks{
             cleanup();
         }
         catch (const std::exception& e) {
-            spdlog::critical("Exception:" + std::string(e.what()));
+            spdlog::critical("Exception: {}", std::string(e.what()));
         }
     }
 
     void Application::init()
     {
+        spdlog::set_level(spdlog::level::trace);
+
         spdlog::info("Initialize mineblocks");
+
+        m_window.init();
+        m_currentState->init();
     }
 
     void Application::loop()
@@ -28,9 +38,9 @@ namespace mineblocks{
 
         spdlog::info("Running mineblocks");
 
-        while (m_running){
+        while (m_running) {
             auto elapsedUpdate = m_elapsedUpdate.getElapsed();
-            if(elapsedUpdate != 0){
+            if (elapsedUpdate != 0) {
                 m_ups.update(Time::now());
 
                 m_currentState->input();
@@ -40,7 +50,7 @@ namespace mineblocks{
             }
 
             auto elapsedRender = m_elapsedRender.getElapsed();
-            if(elapsedRender != 0){
+            if (elapsedRender != 0) {
                 m_fps.update(Time::now());
 
                 render();
@@ -53,35 +63,31 @@ namespace mineblocks{
     void Application::cleanup()
     {
         spdlog::info("Cleanup mineblocks");
+
+        m_currentState->cleanup();
+        m_window.cleanup();
     }
 
     void Application::input()
     {
-
     }
 
     void Application::update()
     {
-
     }
 
     void Application::render()
     {
-
-    }
-
-    template <typename T, typename>
-    void Application::setGameState()
-    {
-        spdlog::debug("Change game state");
-        m_currentState->cleanup();
-        m_currentState = std::make_shared<T>(this);
-        m_currentState->init();
     }
 
     std::shared_ptr<GameState> Application::getGameState()
     {
         return m_currentState;
+    }
+
+    Window Application::getWindow() const
+    {
+        return m_window;
     }
 
     bool Application::isRunning() const
@@ -124,4 +130,4 @@ namespace mineblocks{
     {
         return m_fps.value;
     }
-}
+} // namespace mineblocks

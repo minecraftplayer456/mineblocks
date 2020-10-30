@@ -1,21 +1,20 @@
 #pragma once
 
-namespace mineblocks{
+namespace mineblocks {
     class Application;
 
-    class GameState{
+    class GameState {
       public:
         explicit GameState(Application* app);
 
-        virtual void init() = 0;
-        virtual void cleanup() = 0;
+        virtual void init();
+        virtual void cleanup();
 
-        virtual void input() = 0;
-        virtual void update() = 0;
-        virtual void render() = 0;
+        virtual void input();
+        virtual void update();
+        virtual void render();
 
       protected:
         Application* m_app;
-
     };
-}
+} // namespace mineblocks

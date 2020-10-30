@@ -9,6 +9,8 @@ conan_basic_setup()
 add_executable(mineblocks
         src/core/application.cpp
 
+        src/devices/window.cpp
+
         src/maths/time.cpp
 
         src/state/game_state.cpp
