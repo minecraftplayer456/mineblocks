@@ -29,6 +29,7 @@ namespace mineblocks {
         spdlog::info("Initialize mineblocks");
 
         m_window.init();
+        m_masterRenderer.init();
         m_currentState->init();
     }
 
@@ -65,6 +66,7 @@ namespace mineblocks {
         spdlog::info("Cleanup mineblocks");
 
         m_currentState->cleanup();
+        m_masterRenderer.cleanup();
         m_window.cleanup();
     }
 
@@ -88,6 +90,11 @@ namespace mineblocks {
     Window Application::getWindow() const
     {
         return m_window;
+    }
+
+    MasterRenderer Application::getMasterRenderer() const
+    {
+        return m_masterRenderer;
     }
 
     bool Application::isRunning() const

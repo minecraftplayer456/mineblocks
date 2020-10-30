@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include "devices/window.hpp"
+#include "graphics/master_renderer.hpp"
 #include "maths/time.hpp"
 #include "state/game_state.hpp"
 
@@ -22,6 +23,7 @@ namespace mineblocks {
         std::shared_ptr<GameState> getGameState();
 
         [[nodiscard]] Window getWindow() const;
+        [[nodiscard]] MasterRenderer getMasterRenderer() const;
 
         [[nodiscard]] bool isRunning() const;
         void requestStop();
@@ -38,6 +40,7 @@ namespace mineblocks {
         bool m_running = false;
 
         Window m_window;
+        MasterRenderer m_masterRenderer;
 
         std::shared_ptr<GameState> m_currentState;
 

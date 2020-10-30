@@ -11,6 +11,8 @@ add_executable(mineblocks
 
         src/devices/window.cpp
 
+        src/graphics/master_renderer.cpp
+
         src/maths/time.cpp
 
         src/state/game_state.cpp
