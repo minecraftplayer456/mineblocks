@@ -1,6 +1,9 @@
-#include <iostream>
+#include "core/application.hpp"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+int main()
+{
+    mineblocks::Application app;
+    app.run();
+
     return 0;
 }
