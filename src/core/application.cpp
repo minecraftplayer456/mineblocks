@@ -1,7 +1,8 @@
 #include "application.hpp"
 
 #include <stdexcept>
-#include <iostream>
+
+#include <spdlog/spdlog.h>
 
 namespace mineblocks{
     void Application::run()
@@ -12,18 +13,20 @@ namespace mineblocks{
             cleanup();
         }
         catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
+            spdlog::critical("Exception:" + std::string(e.what()));
         }
     }
 
     void Application::init()
     {
-
+        spdlog::info("Initialize mineblocks");
     }
 
     void Application::loop()
     {
         m_running = true;
+
+        spdlog::info("Running mineblocks");
 
         while (m_running){
             auto elapsedUpdate = m_elapsedUpdate.getElapsed();
@@ -49,7 +52,7 @@ namespace mineblocks{
 
     void Application::cleanup()
     {
-
+        spdlog::info("Cleanup mineblocks");
     }
 
     void Application::input()
@@ -70,6 +73,7 @@ namespace mineblocks{
     template <typename T, typename>
     void Application::setGameState()
     {
+        spdlog::debug("Change game state");
         m_currentState->cleanup();
         m_currentState = std::make_shared<T>(this);
         m_currentState->init();
@@ -87,6 +91,7 @@ namespace mineblocks{
 
     void Application::requestStop()
     {
+        spdlog::info("Request stop");
         m_running = false;
     }
 
