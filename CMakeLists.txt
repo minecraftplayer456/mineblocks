@@ -3,6 +3,9 @@ project(mineblocks)
 
 set(CMAKE_CXX_STANDARD 20)
 
+include(conan/conanbuildinfo.cmake)
+conan_basic_setup()
+
 add_executable(mineblocks
         src/core/application.cpp
 
@@ -13,4 +16,9 @@ add_executable(mineblocks
 
         src/main.cpp)
 
-target_include_directories(mineblocks PRIVATE src)
+set(DEPENDENCIES ${CONAN_LIBS})
+set(INCLUDES ${CMAKE_SOURCE_DIR}/src)
+
+target_include_directories(mineblocks PRIVATE ${INCLUDES})
+
+target_link_libraries(mineblocks ${DEPENDENCIES})
