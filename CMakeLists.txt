@@ -1,21 +1,6 @@
-#Set minimal cmake version
 cmake_minimum_required(VERSION 3.17)
-
-#Set project information
 project(mineblocks)
+
 set(CMAKE_CXX_STANDARD 20)
 
-#Add conan package manager
-include(conan/conanbuildinfo.cmake)
-conan_basic_setup()
-
-#Find dependencies not from conan
-find_package(Vulkan REQUIRED)
-
-#Set globals
-set(DEPENDENCIES Vulkan::Vulkan ${CONAN_LIBS})
-set(INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src)
-
-#Include subdirectories
-add_subdirectory(src/engine)
-add_subdirectory(src/mineblocks)
+add_executable(mineblocks src/main.cpp)
