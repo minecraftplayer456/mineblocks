@@ -30,7 +30,7 @@ namespace mineblocks {
 
         m_window.init();
 
-        m_masterRenderer = std::make_shared<MasterRenderer>();
+        m_masterRenderer = std::make_shared<MasterRenderer>(&m_window);
         m_masterRenderer->init();
 
         m_currentState->init();

@@ -15,6 +15,8 @@ namespace mineblocks {
             throw std::runtime_error("Could not initialize glfw");
         }
 
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
         m_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE.c_str(),
                                     nullptr, nullptr);
 

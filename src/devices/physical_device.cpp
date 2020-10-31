@@ -78,7 +78,7 @@ namespace mineblocks {
         spdlog::debug("Found suitable physical device: {}", m_properties.deviceName);
     }
 
-    const VkPhysicalDevice& PhysicalDevice::getPhysicalDevice() const
+    const VkPhysicalDevice& PhysicalDevice::getDevice() const
     {
         return m_physicalDevice;
     }

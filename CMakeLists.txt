@@ -14,6 +14,7 @@ add_executable(mineblocks
         src/devices/instance.cpp
         src/devices/logical_device.cpp
         src/devices/physical_device.cpp
+        src/devices/surface.cpp
         src/devices/window.cpp
 
         src/graphics/graphics.cpp

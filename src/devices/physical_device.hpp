@@ -7,7 +7,7 @@ namespace mineblocks {
       public:
         explicit PhysicalDevice(Instance* instance);
 
-        [[nodiscard]] const VkPhysicalDevice& getPhysicalDevice() const;
+        [[nodiscard]] const VkPhysicalDevice& getDevice() const;
         [[nodiscard]] const VkPhysicalDeviceProperties& getProperties() const;
         [[nodiscard]] const VkPhysicalDeviceFeatures& getFeatures() const;
         [[nodiscard]] const VkPhysicalDeviceMemoryProperties& getMemoryProperties() const;
