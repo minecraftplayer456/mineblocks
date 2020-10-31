@@ -17,6 +17,10 @@ add_executable(mineblocks
         src/devices/surface.cpp
         src/devices/window.cpp
 
+        src/graphics/images/image.cpp
+
+        src/graphics/renderpass/swapchain.cpp
+
         src/graphics/graphics.cpp
         src/graphics/master_renderer.cpp
 

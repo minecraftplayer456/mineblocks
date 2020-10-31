@@ -7,6 +7,12 @@
 #include "core/application.hpp"
 
 namespace mineblocks {
+    void glfwWindowSizeCallback(GLFWwindow* window, int width, int height)
+    {
+        auto win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        win->m_size = {width, height};
+    }
+
     void Window::init()
     {
         spdlog::debug("Create window}");
@@ -24,7 +30,13 @@ namespace mineblocks {
             throw std::runtime_error("Could not create glfw window");
         }
 
+        m_size = {WINDOW_WIDTH, WINDOW_HEIGHT};
+
+        glfwSetWindowUserPointer(m_window, this);
+
         glfwShowWindow(m_window);
+
+        glfwSetWindowSizeCallback(m_window, glfwWindowSizeCallback);
     }
 
     void Window::input(Application* app)
@@ -44,6 +56,11 @@ namespace mineblocks {
     GLFWwindow* Window::getWindow()
     {
         return m_window;
+    }
+
+    const glm::uvec2& Window::getSize() const
+    {
+        return m_size;
     }
 
     std::pair<const char**, uint32_t> Window::getExtensions()

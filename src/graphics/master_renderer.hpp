@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "devices/logical_device.hpp"
+#include "graphics/renderpass/swapchain.hpp"
 
 namespace mineblocks {
     class Application;
@@ -20,5 +20,6 @@ namespace mineblocks {
         PhysicalDevice m_physicalDevice;
         Surface m_surface;
         LogicalDevice m_logicalDevice;
+        Swampchain m_swapchain;
     };
 } // namespace mineblocks
