@@ -11,6 +11,7 @@ namespace mineblocks {
         , m_swapchain(&m_physicalDevice, &m_logicalDevice, &m_surface,
                       {window->getSize().x, window->getSize().y})
         , m_renderpass(&m_logicalDevice, &m_surface)
+        , m_graphicsPipeline(&m_logicalDevice, &m_swapchain, &m_renderpass)
     {
     }
 

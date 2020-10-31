@@ -16,6 +16,7 @@ namespace mineblocks {
                          const LogicalDevice* logicalDevice, const Surface* surface,
                          const VkExtent2D& extent, const Swapchain* oldSwapchain)
         : m_logicalDevice(logicalDevice)
+        , m_extent(extent)
     {
         spdlog::debug("Create swapchain");
 
@@ -179,5 +180,10 @@ namespace mineblocks {
     uint32_t Swapchain::getActiveImageIndex() const
     {
         return m_activeImageIndex;
+    }
+
+    const VkExtent2D& Swapchain::getExtent() const
+    {
+        return m_extent;
     }
 } // namespace mineblocks

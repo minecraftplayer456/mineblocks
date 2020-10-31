@@ -22,6 +22,7 @@ namespace mineblocks {
         [[nodiscard]] const VkImage& getActiveImage() const;
         [[nodiscard]] uint32_t getImageCount() const;
         [[nodiscard]] uint32_t getActiveImageIndex() const;
+        [[nodiscard]] const VkExtent2D& getExtent() const;
 
       private:
         const LogicalDevice* m_logicalDevice;
@@ -29,6 +30,8 @@ namespace mineblocks {
 
         uint32_t m_imageCount = 0;
         uint32_t m_activeImageIndex;
+
+        VkExtent2D m_extent;
 
         std::vector<VkImage> m_images;
         std::vector<VkImageView> m_imageViews;

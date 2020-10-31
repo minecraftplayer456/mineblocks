@@ -19,6 +19,9 @@ add_executable(mineblocks
 
         src/graphics/images/image.cpp
 
+        src/graphics/pipelines/shader.cpp
+        src/graphics/pipelines/graphics_pipeline.cpp
+
         src/graphics/renderpass/renderpass.cpp
         src/graphics/renderpass/swapchain.cpp
 
@@ -30,10 +33,12 @@ add_executable(mineblocks
         src/state/game_state.cpp
         src/state/playing_state.cpp
 
+        src/utils/file_util.cpp
+
         src/main.cpp)
 
 set(DEPENDENCIES Vulkan::Vulkan ${CONAN_LIBS})
-set(INCLUDES ${CMAKE_SOURCE_DIR}/src)
+set(INCLUDES ${CMAKE_SOURCE_DIR}/src &{CONAN_INCLUDE_DIRS})
 
 target_include_directories(mineblocks PRIVATE ${INCLUDES})
 

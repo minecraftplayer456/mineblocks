@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "graphics/renderpass/renderpass.hpp"
+#include "graphics/pipelines/graphics_pipeline.hpp"
 
 namespace mineblocks {
     class Application;
@@ -22,5 +22,6 @@ namespace mineblocks {
         LogicalDevice m_logicalDevice;
         Swapchain m_swapchain;
         Renderpass m_renderpass;
+        GraphicsPipeline m_graphicsPipeline;
     };
 } // namespace mineblocks
