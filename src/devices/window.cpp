@@ -43,4 +43,18 @@ namespace mineblocks {
     {
         return m_window;
     }
+
+    std::pair<const char**, uint32_t> Window::getExtensions()
+    {
+        uint32_t glfwExtensionCount;
+        auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+        return std::make_pair(glfwExtensions, glfwExtensionCount);
+    }
+
+    VkResult Window::createSurface(VkInstance const& instance,
+                                   const VkAllocationCallbacks* allocator,
+                                   VkSurfaceKHR* surface) const
+    {
+        return glfwCreateWindowSurface(instance, m_window, allocator, surface);
+    }
 } // namespace mineblocks

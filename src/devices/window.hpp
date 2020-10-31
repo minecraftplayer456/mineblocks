@@ -1,8 +1,11 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+
 #include <string>
 
 #include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
 
 namespace mineblocks {
     class Application;
@@ -18,6 +21,11 @@ namespace mineblocks {
         void cleanup();
 
         GLFWwindow* getWindow();
+
+        static std::pair<const char**, uint32_t> getExtensions();
+        VkResult createSurface(const VkInstance& instance,
+                               const VkAllocationCallbacks* allocator,
+                               VkSurfaceKHR* surface) const;
 
       private:
         GLFWwindow* m_window = nullptr;

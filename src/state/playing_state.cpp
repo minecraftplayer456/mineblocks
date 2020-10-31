@@ -27,6 +27,6 @@ namespace mineblocks {
 
     void PlayingState::render()
     {
-        m_app->getMasterRenderer().render(m_app);
+        m_app->getMasterRenderer()->render(m_app);
     }
 } // namespace mineblocks
