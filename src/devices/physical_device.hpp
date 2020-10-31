@@ -5,7 +5,7 @@
 namespace mineblocks {
     class PhysicalDevice {
       public:
-        explicit PhysicalDevice(Instance* instance);
+        explicit PhysicalDevice(const Instance* instance);
 
         [[nodiscard]] const VkPhysicalDevice& getDevice() const;
         [[nodiscard]] const VkPhysicalDeviceProperties& getProperties() const;
@@ -13,7 +13,7 @@ namespace mineblocks {
         [[nodiscard]] const VkPhysicalDeviceMemoryProperties& getMemoryProperties() const;
 
       private:
-        Instance* m_instance;
+        const Instance* m_instance;
 
         VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
         VkPhysicalDeviceProperties m_properties{};

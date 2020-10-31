@@ -2,10 +2,7 @@
 
 #include <memory>
 
-#include "devices/instance.hpp"
-#include "devices/physical_device.hpp"
-#include "devices/surface.hpp"
-#include "devices/window.hpp"
+#include "devices/logical_device.hpp"
 
 namespace mineblocks {
     class Application;
@@ -22,5 +19,6 @@ namespace mineblocks {
         Instance m_instance;
         PhysicalDevice m_physicalDevice;
         Surface m_surface;
+        LogicalDevice m_logicalDevice;
     };
 } // namespace mineblocks

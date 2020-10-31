@@ -7,7 +7,8 @@
 namespace mineblocks {
     class Surface {
       public:
-        Surface(Instance* instance, PhysicalDevice* physicalDevice, Window* window);
+        Surface(const Instance* instance, const PhysicalDevice* physicalDevice,
+                const Window* window);
         ~Surface();
 
         [[nodiscard]] const VkSurfaceKHR& getSurface() const;
@@ -15,7 +16,7 @@ namespace mineblocks {
         [[nodiscard]] VkSurfaceFormatKHR getFormat() const;
 
       private:
-        Instance* m_instance;
+        const Instance* m_instance;
 
         VkSurfaceKHR m_surface = VK_NULL_HANDLE;
         VkSurfaceCapabilitiesKHR m_capabilities{};

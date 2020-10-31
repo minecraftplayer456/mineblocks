@@ -34,7 +34,11 @@ namespace mineblocks {
 
         [[nodiscard]] VkInstance getInstance() const;
 
+        [[nodiscard]] std::vector<const char*> getValidationLayers() const;
+
       private:
+        std::vector<const char*> m_validationLayers;
+
         VkInstance m_instance{};
 
         VkDebugUtilsMessengerCreateInfoEXT m_debugCreateInfo{};

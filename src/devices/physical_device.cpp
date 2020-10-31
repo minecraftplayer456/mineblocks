@@ -8,10 +8,10 @@
 #include "devices/logical_device.hpp"
 
 namespace mineblocks {
-    PhysicalDevice::PhysicalDevice(Instance* instance)
+    PhysicalDevice::PhysicalDevice(const Instance* instance)
         : m_instance(instance)
     {
-        spdlog::debug("Gather physical devices");
+        spdlog::debug("Gather vulkan physical devices");
 
         uint32_t physicalDevicesCount;
         vkEnumeratePhysicalDevices(m_instance->getInstance(), &physicalDevicesCount,

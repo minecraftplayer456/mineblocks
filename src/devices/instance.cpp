@@ -71,7 +71,7 @@ namespace mineblocks {
                                             glfwExtensions + glfwExtensionsCount);
 
         // Validation Layers
-        std::vector<const char*> validationLayers;
+        // std::vector<const char*> validationLayers;
         if (enableValidationLayers) {
             // Validation Layers
             extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -80,10 +80,10 @@ namespace mineblocks {
             std::vector<VkLayerProperties> layers(layerCount);
             vkEnumerateInstanceLayerProperties(&layerCount, layers.data());
 
-            validationLayers = validationLayerNames;
+            m_validationLayers = validationLayerNames;
 
-            for (int i = 0; i < validationLayers.size(); i++) {
-                auto layerName = validationLayers[i];
+            for (int i = 0; i < m_validationLayers.size(); i++) {
+                auto layerName = m_validationLayers[i];
                 bool found = false;
                 for (const auto& layer : layers) {
                     if (strcmp(layerName, layer.layerName) == 0) {
@@ -94,7 +94,7 @@ namespace mineblocks {
 
                 if (!found) {
                     spdlog::error("Could not find validation layer: {}", layerName);
-                    validationLayers.erase(validationLayers.begin() + i);
+                    m_validationLayers.erase(m_validationLayers.begin() + i);
                 }
             }
 
@@ -119,8 +119,8 @@ namespace mineblocks {
         createInfo.pApplicationInfo = &appInfo;
         createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
+        createInfo.enabledLayerCount = static_cast<uint32_t>(m_validationLayers.size());
+        createInfo.ppEnabledLayerNames = m_validationLayers.data();
 
         Graphics::checkVk(vkCreateInstance(&createInfo, nullptr, &m_instance));
 
@@ -142,5 +142,10 @@ namespace mineblocks {
     VkInstance Instance::getInstance() const
     {
         return m_instance;
+    }
+
+    std::vector<const char*> Instance::getValidationLayers() const
+    {
+        return m_validationLayers;
     }
 } // namespace mineblocks

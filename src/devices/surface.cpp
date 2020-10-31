@@ -3,7 +3,8 @@
 #include <spdlog/spdlog.h>
 
 namespace mineblocks {
-    Surface::Surface(Instance* instance, PhysicalDevice* physicalDevice, Window* window)
+    Surface::Surface(const Instance* instance, const PhysicalDevice* physicalDevice,
+                     const Window* window)
         : m_instance(instance)
     {
         spdlog::debug("Create vulkan surface");
@@ -45,6 +46,8 @@ namespace mineblocks {
 
     Surface::~Surface()
     {
+        spdlog::debug("Destroy vulkan surface");
+
         vkDestroySurfaceKHR(m_instance->getInstance(), m_surface, nullptr);
     }
 
