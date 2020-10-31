@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "graphics/pipelines/graphics_pipeline.hpp"
+#include "graphics/renderpass/framebuffers.hpp"
 
 namespace mineblocks {
     class Application;
@@ -23,5 +24,6 @@ namespace mineblocks {
         Swapchain m_swapchain;
         Renderpass m_renderpass;
         GraphicsPipeline m_graphicsPipeline;
+        Framebuffers m_framebuffers;
     };
 } // namespace mineblocks

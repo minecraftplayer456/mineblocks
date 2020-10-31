@@ -12,6 +12,7 @@ namespace mineblocks {
                       {window->getSize().x, window->getSize().y})
         , m_renderpass(&m_logicalDevice, &m_surface)
         , m_graphicsPipeline(&m_logicalDevice, &m_swapchain, &m_renderpass)
+        , m_framebuffers(&m_logicalDevice, &m_renderpass, &m_swapchain)
     {
     }
 

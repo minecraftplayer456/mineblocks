@@ -22,6 +22,7 @@ add_executable(mineblocks
         src/graphics/pipelines/shader.cpp
         src/graphics/pipelines/graphics_pipeline.cpp
 
+        src/graphics/renderpass/framebuffers.cpp
         src/graphics/renderpass/renderpass.cpp
         src/graphics/renderpass/swapchain.cpp
 
