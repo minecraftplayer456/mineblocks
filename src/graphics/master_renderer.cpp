@@ -13,6 +13,7 @@ namespace mineblocks {
         , m_renderpass(&m_logicalDevice, &m_surface)
         , m_graphicsPipeline(&m_logicalDevice, &m_swapchain, &m_renderpass)
         , m_framebuffers(&m_logicalDevice, &m_renderpass, &m_swapchain)
+        , m_commandPool(&m_logicalDevice)
     {
     }
 
