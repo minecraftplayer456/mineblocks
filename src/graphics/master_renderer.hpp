@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "graphics/commands/command_pool.hpp"
+#include "graphics/commands/command_buffer.hpp"
 #include "graphics/pipelines/graphics_pipeline.hpp"
 #include "graphics/renderpass/framebuffers.hpp"
 
@@ -27,5 +27,6 @@ namespace mineblocks {
         GraphicsPipeline m_graphicsPipeline;
         Framebuffers m_framebuffers;
         CommandPool m_commandPool;
+        CommandBuffer m_commandBuffer;
     };
 } // namespace mineblocks

@@ -18,6 +18,7 @@ add_executable(mineblocks
         src/devices/window.cpp
 
         src/graphics/commands/command_pool.cpp
+        src/graphics/commands/command_buffer.cpp
 
         src/graphics/images/image.cpp
 
