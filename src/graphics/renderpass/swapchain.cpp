@@ -12,9 +12,9 @@ namespace mineblocks {
         VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
     };
 
-    Swampchain::Swampchain(const PhysicalDevice* physicalDevice,
-                           const LogicalDevice* logicalDevice, const Surface* surface,
-                           const VkExtent2D& extent, const Swampchain* oldSwapchain)
+    Swapchain::Swapchain(const PhysicalDevice* physicalDevice,
+                         const LogicalDevice* logicalDevice, const Surface* surface,
+                         const VkExtent2D& extent, const Swapchain* oldSwapchain)
         : m_logicalDevice(logicalDevice)
     {
         spdlog::debug("Create swapchain");
@@ -126,7 +126,7 @@ namespace mineblocks {
         vkCreateFence(m_logicalDevice->getDevice(), &createInfo, nullptr, &m_imageFence);
     }
 
-    Swampchain::~Swampchain()
+    Swapchain::~Swapchain()
     {
         spdlog::debug("Destroy swapchain");
 
@@ -139,44 +139,44 @@ namespace mineblocks {
         vkDestroyFence(m_logicalDevice->getDevice(), m_imageFence, nullptr);
     }
 
-    VkResult Swampchain::acquireNextImage(VkSemaphore const& presentSemaphore,
-                                          VkFence fence)
+    VkResult Swapchain::acquireNextImage(VkSemaphore const& presentSemaphore,
+                                         VkFence fence)
     {
         return VK_ERROR_INITIALIZATION_FAILED;
     }
 
-    VkResult Swampchain::queuePresent(VkQueue const& presentQueue,
-                                      VkSemaphore const& semaphore)
+    VkResult Swapchain::queuePresent(VkQueue const& presentQueue,
+                                     VkSemaphore const& semaphore)
     {
         return VK_ERROR_INITIALIZATION_FAILED;
     }
 
-    const VkSwapchainKHR& Swampchain::getSwapchain() const
+    const VkSwapchainKHR& Swapchain::getSwapchain() const
     {
         return m_swapChain;
     }
 
-    const std::vector<VkImage>& Swampchain::getImages() const
+    const std::vector<VkImage>& Swapchain::getImages() const
     {
         return m_images;
     }
 
-    const std::vector<VkImageView>& Swampchain::getImageViews() const
+    const std::vector<VkImageView>& Swapchain::getImageViews() const
     {
         return m_imageViews;
     }
 
-    const VkImage& Swampchain::getActiveImage() const
+    const VkImage& Swapchain::getActiveImage() const
     {
         return m_images[m_activeImageIndex];
     }
 
-    uint32_t Swampchain::getImageCount() const
+    uint32_t Swapchain::getImageCount() const
     {
         return m_imageCount;
     }
 
-    uint32_t Swampchain::getActiveImageIndex() const
+    uint32_t Swapchain::getActiveImageIndex() const
     {
         return m_activeImageIndex;
     }

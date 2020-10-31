@@ -3,12 +3,12 @@
 #include "devices/logical_device.hpp"
 
 namespace mineblocks {
-    class Swampchain {
+    class Swapchain {
       public:
-        Swampchain(const PhysicalDevice* physicalDevice,
-                   const LogicalDevice* logicalDevice, const Surface* surface,
-                   const VkExtent2D& extent, const Swampchain* oldSwapchain = nullptr);
-        ~Swampchain();
+        Swapchain(const PhysicalDevice* physicalDevice,
+                  const LogicalDevice* logicalDevice, const Surface* surface,
+                  const VkExtent2D& extent, const Swapchain* oldSwapchain = nullptr);
+        ~Swapchain();
 
         VkResult acquireNextImage(const VkSemaphore& presentSemaphore = VK_NULL_HANDLE,
                                   VkFence fence = VK_NULL_HANDLE);
