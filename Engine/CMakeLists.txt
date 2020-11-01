@@ -1,5 +1,11 @@
 add_library(Engine
-        src/Engine.cpp
+        src/Engine/Core/Application.cpp
+        src/Engine/Core/Engine.cpp
+        src/Engine/Core/EntryPoint.hpp
+
+        src/Engine/Util/Version.cpp
+
+        src/Engine.hpp
         )
 
 target_include_directories(Engine PUBLIC src/)
