@@ -9,6 +9,8 @@ namespace Engine {
 
         void Run();
 
+        [[nodiscard]] const ModuleManager& GetModuleManager() const;
+
         [[nodiscard]] Application* GetApplication() const;
 
       private:
@@ -16,8 +18,9 @@ namespace Engine {
         void loop();
         void cleanup();
 
-        Application* m_app = nullptr;
+        bool m_Running = false;
 
-        bool m_running = false;
+        ModuleManager m_ModuleManager;
+        Application* m_App = nullptr;
     };
 } // namespace Engine

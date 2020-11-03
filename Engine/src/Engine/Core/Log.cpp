@@ -1,9 +1,11 @@
+#include "Log.hpp"
+
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Engine {
-    Ref<spdlog::logger> Log::s_coreLogger;
-    Ref<spdlog::logger> Log::s_clientLogger;
+    std::shared_ptr<spdlog::logger> Log::s_coreLogger;
+    std::shared_ptr<spdlog::logger> Log::s_clientLogger;
 
     void Log::Init()
     {

@@ -3,8 +3,10 @@
 #include <Engine/Core/EntryPoint.hpp>
 
 namespace Mineblocks {
-    class MineblocksApp : public Engine::Application {
+    class App : public Engine::Application {
       public:
-        MineblocksApp();
+        App();
+
+        void Init();
     };
 } // namespace Mineblocks

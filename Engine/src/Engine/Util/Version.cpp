@@ -27,7 +27,8 @@ namespace Engine {
     {
         std::stringstream ss;
 
-        ss << m_major << "." << m_minor << "." << m_patch;
+        ss << static_cast<int>(m_major) << "." << static_cast<int>(m_minor) << "."
+           << static_cast<int>(m_patch);
 
         return ss.str();
     }

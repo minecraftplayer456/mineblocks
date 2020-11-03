@@ -7,18 +7,18 @@ namespace Engine {
       public:
         static void Init();
 
-        static Ref<spdlog::logger>& GetCoreLogger()
+        static std::shared_ptr<spdlog::logger>& GetCoreLogger()
         {
             return s_coreLogger;
         }
-        static Ref<spdlog::logger>& GetClientLogger()
+        static std::shared_ptr<spdlog::logger>& GetClientLogger()
         {
             return s_clientLogger;
         }
 
       private:
-        static Ref<spdlog::logger> s_coreLogger;
-        static Ref<spdlog::logger> s_clientLogger;
+        static std::shared_ptr<spdlog::logger> s_coreLogger;
+        static std::shared_ptr<spdlog::logger> s_clientLogger;
     };
 } // namespace Engine
 

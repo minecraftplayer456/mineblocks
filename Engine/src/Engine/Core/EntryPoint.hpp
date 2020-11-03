@@ -7,10 +7,9 @@ extern Engine::Application* Engine::CreateApplication();
 int main(int argc, char** argv)
 {
     auto* app = Engine::CreateApplication();
-    auto* engine = new Engine::Engine(app);
+    auto engine = Engine::Engine(app);
 
-    engine->Run();
+    engine.Run();
 
-    delete engine;
     delete app;
 }

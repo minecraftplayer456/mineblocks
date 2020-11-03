@@ -1,17 +1,18 @@
 #pragma once
 
+#include "Engine/Core/Module.hpp"
 #include "Engine/Util/Version.hpp"
 
 namespace Engine {
-    class Application {
+    class Application : public Module {
       public:
-        Application(std::string p_name, const Version& p_version);
+        Application(const char* p_name, const Version& p_version);
 
-        [[nodiscard]] const std::string& GetName() const;
+        [[nodiscard]] const char* GetName() const override;
         [[nodiscard]] const Version& GetVersion() const;
 
       private:
-        std::string m_name;
+        const char* m_name;
         Version m_version;
     };
 

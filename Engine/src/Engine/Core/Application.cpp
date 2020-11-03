@@ -3,13 +3,14 @@
 #include <utility>
 
 namespace Engine {
-    Application::Application(std::string p_name, const Version& p_version)
-        : m_name(std::move(p_name))
+    Application::Application(const char* p_name, const Version& p_version)
+        : Module(p_name)
+        , m_name(p_name)
         , m_version(p_version)
     {
     }
 
-    const std::string& Application::GetName() const
+    const char* Application::GetName() const
     {
         return m_name;
     }
