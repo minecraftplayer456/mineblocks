@@ -1,36 +1,36 @@
 #include "EntryPoint.hpp"
 
-const char* TestEvent::GetName() const
-{
-    return "TestEvent";
-}
+class TestLifecycle : public Engine::Lifecycle<TestLifecycle> {
+  public:
+    TestLifecycle()
+    {
+        m_Info.Name = "TestModule";
+        m_Info.Static = true;
+        m_Info.Functions[Engine::LifecycleState::Init] = [this]() { Init(); };
+    }
 
-Engine::ModuleStage TestEvent::GetCallStage() const
-{
-    return Engine::ModuleStage::Init;
-}
+    void Init()
+    {
+        ENGINE_INFO("Init");
+    }
+};
 
-const char* TestEvent2::GetName() const
-{
-    return "TestEvent2";
-}
+class TestLifecycle2 : public Engine::Lifecycle<TestLifecycle2> {
+  public:
+    TestLifecycle2(TestLifecycle* lifecycleTest)
+    {
+        m_Info.Name = "TestModule2";
+        m_Info.Static = true;
+        m_Info.Functions[Engine::LifecycleState::Init] = [this]() { Init(); };
+        m_Info.Dependencies.push_back(
+            reinterpret_cast<Lifecycle<LifecycleObject>* const>(lifecycleTest));
+    }
 
-Engine::ModuleStage TestEvent2::GetCallStage() const
-{
-    return Engine::ModuleStage::Cleanup;
-}
-
-bool TestEventHandler::Handle(const TestEvent& p_Event)
-{
-    std::cout << "Event" << std::endl;
-    return false;
-}
-
-bool TestEventHandler2::Handle(const TestEvent2& p_Event)
-{
-    std::cout << "Event2" << std::endl;
-    return false;
-}
+    void Init()
+    {
+        ENGINE_INFO("Init2");
+    }
+};
 
 int main(int argc, char** argv)
 {
@@ -41,15 +41,14 @@ int main(int argc, char** argv)
 
     delete app;*/
 
-    TestEvent event;
-    TestEvent2 event2;
-    TestEventHandler handler;
-    TestEventHandler2 handler2;
-    Engine::EventBus bus;
+    Engine::Log::Init();
 
-    bus.RegisterHandler<TestEvent>(handler);
-    bus.RegisterHandler<TestEvent2>(handler2);
-    bus.PushEvent<TestEvent>(event);
-    bus.PushEvent<TestEvent2>(event2);
-    bus.NotifyStage(Engine::ModuleStage::Init);
+    auto* lifecycle = new TestLifecycle;
+    auto* lifecycle2 = new TestLifecycle2(lifecycle);
+    Engine::LifecycleManager manager;
+
+    auto testLifecycle = manager.Push<TestLifecycle>();
+    manager.Push<TestLifecycle2>(testLifecycle);
+
+    manager.CallState(Engine::LifecycleState::Init);
 }

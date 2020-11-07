@@ -1,7 +1,7 @@
 #include "Event.hpp"
 
 namespace Engine {
-    void EventBus::NotifyAll()
+    /*void EventBus::NotifyAll()
     {
         for (const auto& [_, event] : m_Events) {
             for (auto it = m_Handlers.find(event->GetTypeId()); it != m_Handlers.end();
@@ -25,5 +25,5 @@ namespace Engine {
                 }
             }
         }
-    }
+    }*/
 } // namespace Engine

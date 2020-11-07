@@ -4,6 +4,7 @@
 
 extern Engine::Application* Engine::CreateApplication();
 
+/*
 class TestEvent : public Engine::Event<TestEvent> {
   public:
     [[nodiscard]] const char* GetName() const override;
@@ -26,4 +27,4 @@ class TestEventHandler : public Engine::EventHandler<TestEvent> {
 class TestEventHandler2 : public Engine::EventHandler<TestEvent2> {
   public:
     bool Handle(const TestEvent2& p_Event) override;
-};
+};*/

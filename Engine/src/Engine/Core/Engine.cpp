@@ -20,9 +20,9 @@ namespace Engine {
         ENGINE_CORE_INFO("Running {} v{}", m_App->GetName(),
                          m_App->GetVersion().ToString());
 
-        m_ModuleManager.PushModule(m_App);
+        // m_ModuleManager.PushModule(m_App);
 
-        m_ModuleManager.CallStage(ModuleStage::Init);
+        // m_ModuleManager.CallStage(ModuleStage::Init);
     }
 
     void Engine::loop()
@@ -32,9 +32,9 @@ namespace Engine {
         m_Running = true;
 
         while (m_Running) {
-            m_ModuleManager.CallStage(ModuleStage::Input);
-            m_ModuleManager.CallStage(ModuleStage::Update);
-            m_ModuleManager.CallStage(ModuleStage::Render);
+            // m_ModuleManager.CallStage(ModuleStage::Input);
+            // m_ModuleManager.CallStage(ModuleStage::Update);
+            // m_ModuleManager.CallStage(ModuleStage::Render);
         }
     }
 
@@ -42,13 +42,13 @@ namespace Engine {
     {
         ENGINE_CORE_INFO("Cleaning up");
 
-        m_ModuleManager.CallStage(ModuleStage::Cleanup);
+        // m_ModuleManager.CallStage(ModuleStage::Cleanup);
     }
 
-    const ModuleManager& Engine::GetModuleManager() const
+    /*const ModuleManager& Engine::GetModuleManager() const
     {
-        return m_ModuleManager;
-    }
+        //return m_ModuleManager;
+    }*/
 
     Application* Engine::GetApplication() const
     {

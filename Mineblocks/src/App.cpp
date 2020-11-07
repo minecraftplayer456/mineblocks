@@ -4,7 +4,7 @@ namespace Mineblocks {
     App::App()
         : Engine::Application("Mineblocks", Engine::Version(0, 1, 0))
     {
-        m_InitFunction = [this]() { Init(); };
+        // m_InitFunction = [this]() { Init(); };
     }
 
     void App::Init()
