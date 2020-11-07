@@ -13,8 +13,8 @@ namespace Engine {
         if (p_Lifecycle->m_Info.Static) {
             if (auto it = m_Statics.find(p_Lifecycle->GetTypeId());
                 it != m_Statics.end()) {
-                ENGINE_CORE_ERROR("Try to add static lifecycle twice: {}",
-                                  p_Lifecycle->m_Info.Name);
+                ENGINE_CORE_DEV_ERROR("Try to add static lifecycle twice: {}",
+                                      p_Lifecycle->m_Info.Name);
             }
             else {
                 m_Lifecycles.push_back(p_Lifecycle);
@@ -26,8 +26,8 @@ namespace Engine {
             if (auto it =
                     std::find(m_Lifecycles.begin(), m_Lifecycles.end(), p_Lifecycle);
                 it != m_Lifecycles.end()) {
-                ENGINE_CORE_ERROR("Try to add lifecycle pointer twice: {}",
-                                  p_Lifecycle->m_Info.Name);
+                ENGINE_CORE_DEV_ERROR("Try to add lifecycle pointer twice: {}",
+                                      p_Lifecycle->m_Info.Name);
             }
             else {
                 m_Lifecycles.push_back(p_Lifecycle);
@@ -50,8 +50,8 @@ namespace Engine {
                 m_Dirty = true;
             }
             else {
-                ENGINE_CORE_ERROR("Failed to pop lifecycle: {}",
-                                  p_Lifecycle->m_Info.Name);
+                ENGINE_CORE_DEV_ERROR("Failed to pop lifecycle: {}",
+                                      p_Lifecycle->m_Info.Name);
             }
         }
         else {

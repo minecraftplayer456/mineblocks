@@ -44,11 +44,16 @@ int main(int argc, char** argv)
     Engine::Log::Init();
 
     auto* lifecycle = new TestLifecycle;
-    auto* lifecycle2 = new TestLifecycle2(lifecycle);
+    // auto* lifecycle2 = new TestLifecycle2(lifecycle);
     Engine::LifecycleManager manager;
 
-    auto testLifecycle = manager.Push<TestLifecycle>();
-    manager.Push<TestLifecycle2>(testLifecycle);
+    // auto testLifecycle = manager.Push<TestLifecycle>();
+    // manager.Push<TestLifecycle2>(testLifecycle);
+
+    manager.Push(
+        reinterpret_cast<Engine::Lifecycle<Engine::LifecycleObject>*>(lifecycle));
+    manager.Push(
+        reinterpret_cast<Engine::Lifecycle<Engine::LifecycleObject>*>(lifecycle));
 
     manager.CallState(Engine::LifecycleState::Init);
 }
