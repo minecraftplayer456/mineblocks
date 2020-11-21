@@ -1,9 +1,9 @@
 #include "Engine.hpp"
 
 namespace Engine {
-    Engine::Engine(Application* p_App)
+    Engine::Engine(Application* app)
+        : App(app)
     {
-        m_App = p_App;
     }
 
     void Engine::Run()
@@ -15,43 +15,50 @@ namespace Engine {
 
     void Engine::init()
     {
-        Log::Init();
+        ENGINE_CORE_INFO("Running {} v{}", App->GetName(), App->GetVersion().ToString());
 
-        ENGINE_CORE_INFO("Running {} v{}", m_App->GetName(),
-                         m_App->GetVersion().ToString());
+        App->Init(this);
 
-        // m_ModuleManager.PushModule(m_App);
+        ModuleManager.CallStage(Module::Stage::Init);
+    }
 
-        // m_ModuleManager.CallStage(ModuleStage::Init);
+    void Engine::RequestClose()
+    {
+        ENGINE_CORE_DEBUG("Request close");
+        Running = false;
     }
 
     void Engine::loop()
     {
-        ENGINE_CORE_DEBUG("Run game loop");
+        ENGINE_CORE_DEBUG("Run gameloop");
 
-        m_Running = true;
+        Running = true;
 
-        while (m_Running) {
-            // m_ModuleManager.CallStage(ModuleStage::Input);
-            // m_ModuleManager.CallStage(ModuleStage::Update);
-            // m_ModuleManager.CallStage(ModuleStage::Render);
+        while (Running) {
+            ModuleManager.CallStage(Module::Stage::Init);
+            ModuleManager.CallStage(Module::Stage::Update);
+            ModuleManager.CallStage(Module::Stage::Render);
+
+            RequestClose();
         }
     }
 
     void Engine::cleanup()
     {
-        ENGINE_CORE_INFO("Cleaning up");
+        ENGINE_CORE_INFO("Closing");
 
-        // m_ModuleManager.CallStage(ModuleStage::Cleanup);
+        ModuleManager.CallStage(Module::Stage::Cleanup);
+
+        App->Cleanup(this);
     }
-
-    /*const ModuleManager& Engine::GetModuleManager() const
-    {
-        //return m_ModuleManager;
-    }*/
 
     Application* Engine::GetApplication() const
     {
-        return m_App;
+        return App;
+    }
+
+    ModuleManager& Engine::GetModuleManager()
+    {
+        return ModuleManager;
     }
 } // namespace Engine

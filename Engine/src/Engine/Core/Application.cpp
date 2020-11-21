@@ -1,20 +1,19 @@
 #include "Application.hpp"
 
 namespace Engine {
-    Application::Application(const char* p_name, const Version& p_version)
-        : // Module(p_name)
-        m_name(p_name)
-        , m_version(p_version)
+    Application::Application(const char* name, const class Version& version)
+        : Name(name)
+        , Version(version)
     {
     }
 
     const char* Application::GetName() const
     {
-        return m_name;
+        return Name;
     }
 
     const Version& Application::GetVersion() const
     {
-        return m_version;
+        return Version;
     }
 } // namespace Engine

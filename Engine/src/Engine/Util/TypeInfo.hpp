@@ -34,29 +34,6 @@ namespace Engine {
         }
     };
 
-    template <typename T, typename K>
-    class TypeObject {
-      public:
-        TypeObject();
-
-        [[nodiscard]] TypeId GetTypeId() const;
-
-      private:
-        TypeId m_TypeId = -1;
-    };
-
-    template <typename T, typename K>
-    TypeObject<T, K>::TypeObject()
-    {
-        m_TypeId = TypeInfo<T>::template GetTypeId<K>();
-    }
-
-    template <typename T, typename K>
-    TypeId TypeObject<T, K>::GetTypeId() const
-    {
-        return m_TypeId;
-    }
-
     template <typename K>
     TypeId TypeInfo<K>::s_NextTypeId = 0;
 

@@ -9,18 +9,21 @@ namespace Engine {
         explicit Engine(Application* p_app);
 
         void Run();
+        void RequestClose();
 
         [[nodiscard]] Application* GetApplication() const;
+
+        [[nodiscard]] ModuleManager& GetModuleManager();
 
       private:
         void init();
         void loop();
         void cleanup();
 
-        bool m_Running = false;
+        bool Running = false;
 
-        LifecycleManager m_LifecycleManager;
+        ModuleManager ModuleManager;
 
-        Application* m_App = nullptr;
+        Application* App = nullptr;
     };
 } // namespace Engine
