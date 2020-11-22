@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Application.hpp"
-#include "Engine/Core/Event.hpp"
+#include "Engine/Core/Event/Event.hpp"
 
 namespace Engine {
     class Engine {
@@ -14,6 +14,7 @@ namespace Engine {
         [[nodiscard]] Application* GetApplication() const;
 
         [[nodiscard]] ModuleManager& GetModuleManager();
+        [[nodiscard]] EventBus& GetEventBus();
 
       private:
         void init();
@@ -23,6 +24,7 @@ namespace Engine {
         bool Running = false;
 
         ModuleManager ModuleManager;
+        EventBus EventBus;
 
         Application* App = nullptr;
     };

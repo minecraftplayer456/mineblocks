@@ -2,9 +2,10 @@ add_library(Engine
         src/Engine/Core/Application.cpp
         src/Engine/Core/Engine.cpp
         src/Engine/Core/EntryPoint.cpp
-        src/Engine/Core/Event.cpp
         src/Engine/Core/Log.cpp
         src/Engine/Core/Module.cpp
+
+        src/Engine/Core/Event/Event.cpp
 
         src/Engine/Util/Graph.cpp
         src/Engine/Util/TypeInfo.cpp
