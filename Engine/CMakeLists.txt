@@ -7,6 +7,8 @@ add_library(Engine
 
         src/Engine/Core/Event/Event.cpp
 
+        src/Engine/Maths/Time.cpp
+
         src/Engine/Util/Graph.cpp
         src/Engine/Util/TypeInfo.cpp
         src/Engine/Util/Version.cpp

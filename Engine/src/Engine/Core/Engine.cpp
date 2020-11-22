@@ -2,73 +2,132 @@
 
 namespace Engine {
     Engine::Engine(Application* app)
-        : App(app)
+        : app(app)
     {
     }
 
     void Engine::Run()
     {
-        init();
-        loop();
-        cleanup();
+        Init();
+        Loop();
+        Cleanup();
     }
 
-    void Engine::init()
+    void Engine::Init()
     {
-        ENGINE_CORE_INFO("Running {} v{}", App->GetName(), App->GetVersion().ToString());
+        ENGINE_CORE_INFO("Running {} v{}", app->GetName(), app->GetVersion().ToString());
 
-        App->Init(this);
+        app->Init(this);
 
-        ModuleManager.CallStage(Module::Stage::Init);
-        EventBus.NotifyStage(Event::Stage::Init);
+        moduleManager.CallStage(Module::Stage::Init);
+        eventBus.NotifyStage(Event::Stage::Init);
     }
 
     void Engine::RequestClose()
     {
         ENGINE_CORE_DEBUG("Request close");
-        Running = false;
+        running = false;
     }
 
-    void Engine::loop()
+    void Engine::Loop()
     {
         ENGINE_CORE_DEBUG("Run gameloop");
 
-        Running = true;
+        running = true;
 
-        while (Running) {
-            ModuleManager.CallStage(Module::Stage::Input);
-            EventBus.NotifyStage(Event::Stage::Input);
-            ModuleManager.CallStage(Module::Stage::Update);
-            EventBus.NotifyStage(Event::Stage::Update);
-            ModuleManager.CallStage(Module::Stage::Render);
-            EventBus.NotifyStage(Event::Stage::Render);
+        while (running) {
+            elapsedUpdate.SetInterval(Time::Seconds(1.0f / upsLimit));
+            elapsedRender.SetInterval(Time::Seconds(1.0f / fpsLimit));
 
-            RequestClose();
+            uint32_t updateTime = elapsedUpdate.GetElapsed();
+            if (updateTime != 0) {
+                static int updates = 0;
+
+                ups.Update(Time::Now());
+
+                moduleManager.CallStage(Module::Stage::Input);
+                eventBus.NotifyStage(Event::Stage::Input);
+
+                moduleManager.CallStage(Module::Stage::Update);
+                eventBus.NotifyStage(Event::Stage::Update);
+
+                deltaUpdate.Update();
+
+                if (updates >= 128) {
+                    ENGINE_CORE_DEV_DEBUG(
+                        "Ups delta: {}; Ups: {}; Fps Delta: {}; Fps: {}",
+                        deltaUpdate.change.AsMilliSeconds(), ups.value,
+                        deltaRender.change.AsMilliSeconds(), fps.value);
+                    updates = 0;
+                }
+
+                updates++;
+            }
+
+            uint32_t renderTime = elapsedRender.GetElapsed();
+            if (renderTime != 0) {
+                fps.Update(Time::Now());
+
+                moduleManager.CallStage(Module::Stage::Render);
+                eventBus.NotifyStage(Event::Stage::Render);
+
+                deltaRender.Update();
+            }
         }
     }
 
-    void Engine::cleanup()
+    void Engine::Cleanup()
     {
         ENGINE_CORE_INFO("Closing");
 
-        ModuleManager.CallStage(Module::Stage::Cleanup);
-        EventBus.NotifyStage(Event::Stage::Cleanup);
+        moduleManager.CallStage(Module::Stage::Cleanup);
+        eventBus.NotifyStage(Event::Stage::Cleanup);
 
-        App->Cleanup(this);
+        app->Cleanup(this);
     }
 
     Application* Engine::GetApplication() const
     {
-        return App;
+        return app;
     }
 
     ModuleManager& Engine::GetModuleManager()
     {
-        return ModuleManager;
+        return moduleManager;
     }
 
     EventBus& Engine::GetEventBus()
     {
-        return EventBus;
+        return eventBus;
+    }
+
+    void Engine::SetUpsLimit(float ups)
+    {
+        upsLimit = ups;
+    }
+
+    void Engine::SetFpsLimit(float fps)
+    {
+        fpsLimit = fps;
+    }
+
+    const Time& Engine::GetDeltaUpdate() const
+    {
+        return deltaUpdate.change;
+    }
+
+    const Time& Engine::GetDeltaRender() const
+    {
+        return deltaRender.change;
+    }
+
+    uint32_t Engine::GetUps() const
+    {
+        return ups.value;
+    }
+
+    uint32_t Engine::GetFps() const
+    {
+        return fps.value;
     }
 } // namespace Engine
