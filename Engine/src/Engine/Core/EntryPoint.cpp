@@ -1,11 +1,8 @@
 #include "EntryPoint.hpp"
 
-int main(int argc, char** argv)
+auto main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) -> int
 {
-    auto* app = Engine::CreateApplication();
-    auto engine = Engine::Engine(app);
+    auto engine = Engine::Engine(Engine::CreateApplication());
 
-    engine.Run();
-
-    delete app;
+    return engine.Run();
 }

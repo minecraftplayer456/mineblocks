@@ -10,16 +10,16 @@ namespace Engine {
       public:
         Application(const char* name, const Version& version);
 
-        [[nodiscard]] const char* GetName() const;
-        [[nodiscard]] const Version& GetVersion() const;
+        [[nodiscard]] auto GetName() const -> const char*;
+        [[nodiscard]] auto GetVersion() const -> const Version&;
 
         virtual void Init(Engine* engine) = 0;
         virtual void Cleanup(Engine* engine) = 0;
 
       private:
-        const char* Name;
-        Version Version;
+        const char* name;
+        Version version;
     };
 
-    Application* CreateApplication();
+    auto CreateApplication() -> std::unique_ptr<Application>;
 } // namespace Engine

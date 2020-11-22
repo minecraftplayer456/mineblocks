@@ -5,22 +5,22 @@
 namespace Engine {
     class Log {
       public:
-        static bool Init();
+        static auto Init() -> bool;
 
         inline static const bool Initialized = Init();
 
-        static std::shared_ptr<spdlog::logger>& GetCoreLogger()
+        static auto GetCoreLogger() -> std::shared_ptr<spdlog::logger>&
         {
-            return CoreLogger;
+            return coreLogger;
         }
-        static std::shared_ptr<spdlog::logger>& GetClientLogger()
+        static auto GetClientLogger() -> std::shared_ptr<spdlog::logger>&
         {
-            return ClientLogger;
+            return clientLogger;
         }
 
       private:
-        static std::shared_ptr<spdlog::logger> CoreLogger;
-        static std::shared_ptr<spdlog::logger> ClientLogger;
+        static std::shared_ptr<spdlog::logger> coreLogger;
+        static std::shared_ptr<spdlog::logger> clientLogger;
     };
 } // namespace Engine
 

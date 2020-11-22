@@ -1,34 +1,34 @@
 #include "Version.hpp"
 
 namespace Engine {
-    Version::Version(uint8_t p_major, uint8_t p_minor, uint8_t p_patch)
-        : m_major(p_major)
-        , m_minor(p_minor)
-        , m_patch(p_patch)
+    Version::Version(uint8_t major, uint8_t minor, uint8_t patch)
+        : major(major)
+        , minor(minor)
+        , patch(patch)
     {
     }
 
-    uint8_t Version::GetMajor() const
+    auto Version::GetMajor() const -> uint8_t
     {
-        return m_major;
+        return major;
     }
 
-    uint8_t Version::GetMinor() const
+    auto Version::GetMinor() const -> uint8_t
     {
-        return m_minor;
+        return minor;
     }
 
-    uint8_t Version::GetPatch() const
+    auto Version::GetPatch() const -> uint8_t
     {
-        return m_patch;
+        return patch;
     }
 
-    std::string Version::ToString() const
+    auto Version::ToString() const -> std::string
     {
         std::stringstream ss;
 
-        ss << static_cast<int>(m_major) << "." << static_cast<int>(m_minor) << "."
-           << static_cast<int>(m_patch);
+        ss << static_cast<int>(major) << "." << static_cast<int>(minor) << "."
+           << static_cast<int>(patch);
 
         return ss.str();
     }

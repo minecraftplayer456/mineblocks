@@ -8,11 +8,11 @@ namespace Engine {
       public:
         class RegistryValue {
           public:
-            std::function<Base*()> create;
-            std::vector<TypeId> required;
+            std::function<std::shared_ptr<Base>()> Create;
+            std::vector<TypeId> Required = {};
         };
 
-        static std::unordered_map<TypeId, RegistryValue>& Registry()
+        static auto Registry() -> std::unordered_map<TypeId, RegistryValue>&
         {
             static std::unordered_map<TypeId, RegistryValue> impl;
             return impl;
@@ -21,7 +21,7 @@ namespace Engine {
         template <typename... Args>
         class Requires {
           public:
-            [[nodiscard]] std::vector<TypeId> Get() const
+            [[nodiscard]] auto Get() const -> std::vector<TypeId>
             {
                 std::vector<TypeId> required;
                 (required.emplace_back(TypeInfo<Base>::template GetTypeId<Args>()), ...);
@@ -32,21 +32,21 @@ namespace Engine {
         template <typename T>
         class Registrar : public Base {
           public:
-            static T* Get()
+            static auto Get() -> std::shared_ptr<T>
             {
-                return Instance;
+                return instance;
             }
 
           protected:
-            inline static T* Instance = nullptr;
+            inline static std::shared_ptr<T> instance;
 
             template <typename... Args>
-            static bool Register(Requires<Args...>&& required = {})
+            static auto Register(Requires<Args...>&& required = {}) -> bool
             {
                 ObjectRegistry::Registry()[TypeInfo<Base>::template GetTypeId<T>()] = {
                     []() {
-                        Instance = new T();
-                        return Instance;
+                        instance = std::make_shared<T>();
+                        return instance;
                     },
                     required.Get()};
                 return true;
@@ -60,7 +60,7 @@ namespace Engine {
 
         using Index = std::pair<unsigned int, TypeId>;
 
-        [[nodiscard]] virtual const char* GetName() const = 0;
+        [[nodiscard]] virtual auto GetName() const -> const char* = 0;
 
         virtual void Init();
         virtual void Input();
@@ -73,16 +73,14 @@ namespace Engine {
 
     class ModuleManager {
       public:
-        ~ModuleManager();
-
         template <typename T>
         void PushModule(T* module);
 
         template <typename T>
-        T* PushModule();
+        auto PushModule() -> std::shared_ptr<T>;
 
         template <typename T>
-        T* PopModule();
+        auto PopModule() -> std::shared_ptr<T>;
 
         void CallStage(Module::Stage stage);
 
@@ -90,37 +88,37 @@ namespace Engine {
         void CallModule(Module::Stage stage);
 
       private:
-        uint8_t NextModuleId = 0;
+        uint8_t nextModuleId = 0;
 
-        std::map<Module::Index, Module*> Modules;
+        std::map<Module::Index, std::shared_ptr<Module>> modules;
 
         template <typename T>
-        T* InitializeModule(TypeId typeId);
+        auto InitializeModule(TypeId typeId) -> std::shared_ptr<T>;
     };
 
     template <typename T>
-    T* ModuleManager::InitializeModule(TypeId typeId)
+    auto ModuleManager::InitializeModule(TypeId typeId) -> std::shared_ptr<T>
     {
         ObjectRegistry<Module>::RegistryValue registryValue =
             ObjectRegistry<Module>::Registry()[typeId];
 
-        for (const TypeId required : registryValue.required) {
-            auto requiredFound =
-                std::find_if(Modules.begin(), Modules.end(),
-                             [required](const std::pair<Module::Index, Module*> x) {
-                                 return x.first.second == required;
-                             });
+        for (const TypeId required : registryValue.Required) {
+            auto requiredFound = std::find_if(
+                modules.begin(), modules.end(),
+                [required](const std::pair<Module::Index, std::shared_ptr<Module>>& x) {
+                    return x.first.second == required;
+                });
 
-            if (requiredFound == Modules.end()) {
+            if (requiredFound == modules.end()) {
                 InitializeModule<T>(required);
             }
         }
 
-        T* module = static_cast<T*>(registryValue.create());
-        Modules[Module::Index(NextModuleId, typeId)] = module;
-        NextModuleId++;
+        std::shared_ptr<Module> module = registryValue.Create();
+        modules[Module::Index(nextModuleId, typeId)] = module;
+        nextModuleId++;
 
-        return module;
+        return std::static_pointer_cast<T>(module);
     }
 
     template <typename T>
@@ -128,31 +126,31 @@ namespace Engine {
     {
         auto typeId = TypeInfo<Module>::GetTypeId<T>();
 
-        auto moduleFound =
-            std::find_if(Modules.begin(), Modules.end(),
-                         [typeId](const std::pair<Module::Index, Module*> x) {
-                             return x.first.second == typeId;
-                         });
+        auto moduleFound = std::find_if(
+            modules.begin(), modules.end(),
+            [typeId](const std::pair<Module::Index, std::shared_ptr<Module>>& x) {
+                return x.first.second == typeId;
+            });
 
-        if (moduleFound == Modules.end()) {
+        if (moduleFound == modules.end()) {
 
             ObjectRegistry<Module>::RegistryValue registryValue =
                 ObjectRegistry<Module>::Registry()[typeId];
 
-            for (const TypeId required : registryValue.required) {
+            for (const TypeId required : registryValue.Required) {
                 auto requiredFound =
-                    std::find_if(Modules.begin(), Modules.end(),
+                    std::find_if(modules.begin(), modules.end(),
                                  [required](const std::pair<Module::Index, Module*> x) {
                                      return x.first.second == required;
                                  });
 
-                if (requiredFound == Modules.end()) {
+                if (requiredFound == modules.end()) {
                     InitializeModule<T>(required);
                 }
             }
 
-            Modules[Module::Index(NextModuleId, typeId)] = module;
-            NextModuleId++;
+            modules[Module::Index(nextModuleId, typeId)] = std::unique_ptr(module);
+            nextModuleId++;
         }
         else {
             ENGINE_CORE_ERROR("Try to add module twice type: {}", typeId);
@@ -160,45 +158,43 @@ namespace Engine {
     }
 
     template <typename T>
-    T* ModuleManager::PushModule()
+    auto ModuleManager::PushModule() -> std::shared_ptr<T>
     {
         TypeId typeId = TypeInfo<Module>::GetTypeId<T>();
 
-        auto moduleFound =
-            std::find_if(Modules.begin(), Modules.end(),
-                         [typeId](const std::pair<Module::Index, Module*> x) {
-                             return x.first.second == typeId;
-                         });
+        auto moduleFound = std::find_if(
+            modules.begin(), modules.end(),
+            [typeId](const std::pair<Module::Index, std::shared_ptr<Module>>& x) {
+                return x.first.second == typeId;
+            });
 
-        if (moduleFound == Modules.end()) {
+        if (moduleFound == modules.end()) {
             return InitializeModule<T>(typeId);
         }
-        else {
-            ENGINE_CORE_ERROR("Try to add module twice type: {}", typeId);
-            return nullptr;
-        }
+
+        ENGINE_CORE_ERROR("Try to add module twice type: {}", typeId);
+        return nullptr;
     }
 
     template <typename T>
-    T* ModuleManager::PopModule()
+    auto ModuleManager::PopModule() -> std::shared_ptr<T>
     {
         TypeId typeId = TypeInfo<Module>::GetTypeId<T>();
 
-        auto moduleFound =
-            std::find_if(Modules.begin(), Modules.end(),
-                         [typeId](const std::pair<Module::Index, Module*> x) {
-                             return x.first.second == typeId;
-                         });
+        auto moduleFound = std::find_if(
+            modules.begin(), modules.end(),
+            [typeId](const std::pair<Module::Index, std::shared_ptr<Module>>& x) {
+                return x.first.second == typeId;
+            });
 
-        if (moduleFound != Modules.end()) {
+        if (moduleFound != modules.end()) {
             T* module = static_cast<T*>(moduleFound->second);
-            Modules.erase(moduleFound);
+            modules.erase(moduleFound);
             return module;
         }
-        else {
-            ENGINE_CORE_DEV_ERROR("Try to pop unknown module type: {}", typeId);
-            return nullptr;
-        }
+
+        ENGINE_CORE_DEV_ERROR("Try to pop unknown module type: {}", typeId);
+        return nullptr;
     }
 
     template <typename T>
@@ -206,13 +202,13 @@ namespace Engine {
     {
         auto typeId = TypeInfo<Module>::GetTypeId<T>();
 
-        auto moduleFound =
-            std::find_if(Modules.begin(), Modules.end(),
-                         [typeId](const std::pair<Module::Index, Module*> x) {
-                             return x.first.second == typeId;
-                         });
+        auto moduleFound = std::find_if(
+            modules.begin(), modules.end(),
+            [typeId](const std::pair<Module::Index, std::shared_ptr<Module>>& x) {
+                return x.first.second == typeId;
+            });
 
-        if (moduleFound != Modules.end()) {
+        if (moduleFound != modules.end()) {
             Module* module = moduleFound->second;
 
             switch (stage) {

@@ -2,18 +2,18 @@
 
 namespace Engine {
     Application::Application(const char* name, const class Version& version)
-        : Name(name)
-        , Version(version)
+        : name(name)
+        , version(version)
     {
     }
 
-    const char* Application::GetName() const
+    auto Application::GetName() const -> const char*
     {
-        return Name;
+        return name;
     }
 
-    const Version& Application::GetVersion() const
+    auto Application::GetVersion() const -> const Version&
     {
-        return Version;
+        return version;
     }
 } // namespace Engine

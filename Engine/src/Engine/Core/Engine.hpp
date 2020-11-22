@@ -7,23 +7,23 @@
 namespace Engine {
     class Engine {
       public:
-        explicit Engine(Application* p_app);
+        explicit Engine(std::unique_ptr<Application> app);
 
-        void Run();
+        auto Run() -> int;
         void RequestClose();
 
-        [[nodiscard]] Application* GetApplication() const;
+        [[nodiscard]] auto GetApplication() -> std::unique_ptr<Application>&;
 
-        [[nodiscard]] ModuleManager& GetModuleManager();
-        [[nodiscard]] EventBus& GetEventBus();
+        [[nodiscard]] auto GetModuleManager() -> ModuleManager&;
+        [[nodiscard]] auto GetEventBus() -> EventBus&;
 
         void SetUpsLimit(float ups);
         void SetFpsLimit(float fps);
 
-        const Time& GetDeltaUpdate() const;
-        const Time& GetDeltaRender() const;
-        uint32_t GetUps() const;
-        uint32_t GetFps() const;
+        [[nodiscard]] auto GetDeltaUpdate() const -> const Time&;
+        [[nodiscard]] auto GetDeltaRender() const -> const Time&;
+        [[nodiscard]] auto GetUps() const -> uint32_t;
+        [[nodiscard]] auto GetFps() const -> uint32_t;
 
       private:
         void Init();
@@ -32,7 +32,7 @@ namespace Engine {
 
         bool running = false;
 
-        Application* app = nullptr;
+        std::unique_ptr<Application> app;
 
         ModuleManager moduleManager;
         EventBus eventBus;
@@ -40,6 +40,6 @@ namespace Engine {
         float upsLimit = 20.0f, fpsLimit = 60.0f;
         DeltaTime deltaUpdate, deltaRender;
         ElapsedTime elapsedUpdate, elapsedRender;
-        ChangePerSecond ups, fps;
+        ChangePerSecond upsCounter, fpsCounter;
     };
 } // namespace Engine

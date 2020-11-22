@@ -1,3 +1,6 @@
 #pragma once
 
-#define BIT(x) (1 << x)
+constexpr auto Bit(int x) -> int
+{
+    return 1 << x;
+}

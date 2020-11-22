@@ -18,114 +18,115 @@ namespace Engine {
         return ss.str();
     }
 
-    constexpr bool Time::operator==(const Time& rhs) const
+    constexpr auto Time::operator==(const Time& rhs) const -> bool
     {
         return value == rhs.value;
     }
 
-    constexpr bool Time::operator!=(const Time& rhs) const
+    constexpr auto Time::operator!=(const Time& rhs) const -> bool
     {
         return value != rhs.value;
     }
 
-    constexpr bool Time::operator<(const Time& rhs) const
+    constexpr auto Time::operator<(const Time& rhs) const -> bool
     {
         return value < rhs.value;
     }
 
-    constexpr bool Time::operator<=(const Time& rhs) const
+    constexpr auto Time::operator<=(const Time& rhs) const -> bool
     {
         return value <= rhs.value;
     }
 
-    constexpr bool Time::operator>(const Time& rhs) const
+    constexpr auto Time::operator>(const Time& rhs) const -> bool
     {
         return value > rhs.value;
     }
 
-    constexpr bool Time::operator>=(const Time& rhs) const
+    constexpr auto Time::operator>=(const Time& rhs) const -> bool
     {
         return value >= rhs.value;
     }
 
-    constexpr Time Time::operator-() const
+    constexpr auto Time::operator-() const -> Time
     {
         return Time(-value);
     }
 
-    constexpr Time& Time::operator+=(const Time& rhs)
+    constexpr auto Time::operator+=(const Time& rhs) -> Time&
     {
         return *this = *this + rhs;
     }
 
-    constexpr Time& Time::operator-=(const Time& rhs)
+    constexpr auto Time::operator-=(const Time& rhs) -> Time&
     {
         return *this = *this - rhs;
     }
 
-    constexpr Time& Time::operator*=(float rhs)
+    constexpr auto Time::operator*=(float rhs) -> Time&
     {
         return *this = *this * rhs;
     }
 
-    constexpr Time& Time::operator*=(int64_t rhs)
+    constexpr auto Time::operator*=(int64_t rhs) -> Time&
     {
         return *this = *this * rhs;
     }
 
-    constexpr Time& Time::operator/=(float rhs)
+    constexpr auto Time::operator/=(float rhs) -> Time&
     {
         return *this = *this / rhs;
     }
 
-    constexpr Time& Time::operator/=(int64_t rhs)
+    constexpr auto Time::operator/=(int64_t rhs) -> Time&
     {
         return *this = *this / rhs;
     }
 
-    constexpr Time operator+(const Time& lhs, const Time& rhs)
+    constexpr auto operator+(const Time& lhs, const Time& rhs) -> Time
     {
         return lhs.value + rhs.value;
     }
 
-    constexpr Time operator-(const Time& lhs, const Time& rhs)
+    constexpr auto operator-(const Time& lhs, const Time& rhs) -> Time
     {
         return lhs.value - rhs.value;
     }
 
-    constexpr Time operator*(const Time& lhs, float rhs)
+    constexpr auto operator*(const Time& lhs, float rhs) -> Time
     {
         return lhs.value * rhs;
     }
 
-    constexpr Time operator*(const Time& lhs, int64_t rhs)
+    constexpr auto operator*(const Time& lhs, int64_t rhs) -> Time
     {
         return lhs.value * rhs;
     }
 
-    constexpr Time operator*(float lhs, const Time& rhs)
+    constexpr auto operator*(float lhs, const Time& rhs) -> Time
     {
         return lhs * rhs.value;
     }
 
-    constexpr Time operator*(int64_t lhs, const Time& rhs)
+    constexpr auto operator*(int64_t lhs, const Time& rhs) -> Time
     {
         return lhs * rhs.value;
     }
 
-    constexpr Time operator/(const Time& lhs, float rhs)
+    constexpr auto operator/(const Time& lhs, float rhs) -> Time
     {
         return lhs.value / rhs;
     }
 
-    constexpr Time operator/(const Time& lhs, int64_t rhs)
+    constexpr auto operator/(const Time& lhs, int64_t rhs) -> Time
     {
         return lhs.value / rhs;
     }
 
-    constexpr double operator/(const Time& lhs, const Time& rhs)
+    constexpr auto operator/(const Time& lhs, const Time& rhs) -> double
     {
-        return lhs.value / rhs.value;
+        return static_cast<double>(lhs.value.count()) /
+               static_cast<double>(rhs.value.count());
     }
 
     ElapsedTime::ElapsedTime(const Time& interval)
@@ -134,7 +135,7 @@ namespace Engine {
     {
     }
 
-    const Time& ElapsedTime::GetStartTime() const
+    auto ElapsedTime::GetStartTime() const -> const Time&
     {
         return startTime;
     }
@@ -144,7 +145,7 @@ namespace Engine {
         this->startTime = startTime;
     }
 
-    const Time& ElapsedTime::GetInterval() const
+    auto ElapsedTime::GetInterval() const -> const Time&
     {
         return interval;
     }
@@ -154,14 +155,15 @@ namespace Engine {
         this->interval = interval;
     }
 
-    uint32_t ElapsedTime::GetElapsed()
+    auto ElapsedTime::GetElapsed() -> uint32_t
     {
         if (interval.AsMicroSeconds<int>() < 0) {
-            return -1;
+            return static_cast<uint32_t>(-1);
         }
 
-        auto now = Time::Now();
-        auto elapsed = static_cast<uint32_t>(std::floor((now - startTime) / interval));
+        Time now = Time::Now();
+        uint32_t elapsed =
+            static_cast<uint32_t>(std::floor((now - startTime) / interval));
 
         if (elapsed != 0.0f) {
             startTime = now;
@@ -172,20 +174,20 @@ namespace Engine {
 
     void DeltaTime::Update()
     {
-        currentTime = Time::Now();
-        change = currentTime - lastTime;
-        lastTime = currentTime;
+        CurrentTime = Time::Now();
+        Change = CurrentTime - LastTime;
+        LastTime = CurrentTime;
     }
 
     void ChangePerSecond::Update(const Time& time)
     {
-        valueTemp++;
+        ValueTemp++;
 
-        if (std::floor(time.AsSeconds()) > std::floor(valueTime.AsSeconds())) {
-            value = valueTemp;
-            valueTemp = 0;
+        if (std::floor(time.AsSeconds()) > std::floor(ValueTime.AsSeconds())) {
+            Value = ValueTemp;
+            ValueTemp = 0;
         }
 
-        valueTime = time;
+        ValueTime = time;
     }
 } // namespace Engine

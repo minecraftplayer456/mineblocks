@@ -10,33 +10,33 @@ namespace Engine {
 
         template <typename K,
                   typename = std::enable_if<std::is_convertible<K*, T*>::value>>
-        static TypeId GetTypeId() noexcept
+        static auto GetTypeId() noexcept -> TypeId
         {
             std::type_index typeIndex(typeid(K));
-            if (auto it = s_TypeMap.find(typeIndex); it != s_TypeMap.end()) {
+            if (auto it = typeMap.find(typeIndex); it != typeMap.end()) {
                 return it->second;
             }
 
             const auto id = NextTypeId();
-            s_TypeMap[typeIndex] = id;
+            typeMap[typeIndex] = id;
             return id;
         }
 
       private:
-        static TypeId s_NextTypeId;
-        static std::unordered_map<std::type_index, TypeId> s_TypeMap;
+        static TypeId nextTypeId;
+        static std::unordered_map<std::type_index, TypeId> typeMap;
 
-        static TypeId NextTypeId() noexcept
+        static auto NextTypeId() noexcept -> TypeId
         {
-            const auto id = s_NextTypeId;
-            ++s_NextTypeId;
+            const auto id = nextTypeId;
+            ++nextTypeId;
             return id;
         }
     };
 
     template <typename K>
-    TypeId TypeInfo<K>::s_NextTypeId = 0;
+    TypeId TypeInfo<K>::nextTypeId = 0;
 
     template <typename K>
-    std::unordered_map<std::type_index, TypeId> TypeInfo<K>::s_TypeMap = {};
+    std::unordered_map<std::type_index, TypeId> TypeInfo<K>::typeMap = {};
 } // namespace Engine

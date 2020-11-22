@@ -13,19 +13,19 @@ namespace Engine {
         }
 
         template <typename Rep = float>
-        static constexpr Time Seconds(const Rep& seconds)
+        static constexpr auto Seconds(const Rep& seconds) -> Time
         {
             return Time(std::chrono::duration<Rep>(seconds));
         }
 
         template <typename Rep = int32_t>
-        static constexpr Time Milliseconds(const Rep& milliSeconds)
+        static constexpr auto Milliseconds(const Rep& milliSeconds) -> Time
         {
             return Time(std::chrono::duration<Rep, std::milli>(milliSeconds));
         }
 
         template <typename Rep = int64_t>
-        static constexpr Time Microseconds(const Rep& microSeconds)
+        static constexpr auto Microseconds(const Rep& microSeconds) -> Time
         {
             return Time(std::chrono::duration<Rep, std::micro>(microSeconds));
         }
@@ -48,9 +48,10 @@ namespace Engine {
             return static_cast<T>(value.count());
         }
 
-        static Time Now();
+        static auto Now() -> Time;
 
-        static std::string GetDateTime(const std::string& format = "%H:%M:%S %d-%m-%Y");
+        static auto GetDateTime(const std::string& format = "%H:%M:%S %d-%m-%Y")
+            -> std::string;
 
         template <typename Rep, typename Period>
         constexpr operator std::chrono::duration<Rep, Period>() const
@@ -58,31 +59,31 @@ namespace Engine {
             return std::chrono::duration_cast<std::chrono::duration<Rep, Period>>(value);
         }
 
-        constexpr bool operator==(const Time& rhs) const;
-        constexpr bool operator!=(const Time& rhs) const;
-        constexpr bool operator<(const Time& rhs) const;
-        constexpr bool operator<=(const Time& rhs) const;
-        constexpr bool operator>(const Time& rhs) const;
-        constexpr bool operator>=(const Time& rhs) const;
+        constexpr auto operator==(const Time& rhs) const -> bool;
+        constexpr auto operator!=(const Time& rhs) const -> bool;
+        constexpr auto operator<(const Time& rhs) const -> bool;
+        constexpr auto operator<=(const Time& rhs) const -> bool;
+        constexpr auto operator>(const Time& rhs) const -> bool;
+        constexpr auto operator>=(const Time& rhs) const -> bool;
 
-        constexpr Time operator-() const;
+        constexpr auto operator-() const -> Time;
 
-        friend constexpr Time operator+(const Time& lhs, const Time& rhs);
-        friend constexpr Time operator-(const Time& lhs, const Time& rhs);
-        friend constexpr Time operator*(const Time& lhs, float rhs);
-        friend constexpr Time operator*(const Time& lhs, int64_t rhs);
-        friend constexpr Time operator*(float lhs, const Time& rhs);
-        friend constexpr Time operator*(int64_t lhs, const Time& rhs);
-        friend constexpr Time operator/(const Time& lhs, float rhs);
-        friend constexpr Time operator/(const Time& lhs, int64_t rhs);
-        friend constexpr double operator/(const Time& lhs, const Time& rhs);
+        friend constexpr auto operator+(const Time& lhs, const Time& rhs) -> Time;
+        friend constexpr auto operator-(const Time& lhs, const Time& rhs) -> Time;
+        friend constexpr auto operator*(const Time& lhs, float rhs) -> Time;
+        friend constexpr auto operator*(const Time& lhs, int64_t rhs) -> Time;
+        friend constexpr auto operator*(float lhs, const Time& rhs) -> Time;
+        friend constexpr auto operator*(int64_t lhs, const Time& rhs) -> Time;
+        friend constexpr auto operator/(const Time& lhs, float rhs) -> Time;
+        friend constexpr auto operator/(const Time& lhs, int64_t rhs) -> Time;
+        friend constexpr auto operator/(const Time& lhs, const Time& rhs) -> double;
 
-        constexpr Time& operator+=(const Time& rhs);
-        constexpr Time& operator-=(const Time& rhs);
-        constexpr Time& operator*=(float rhs);
-        constexpr Time& operator*=(int64_t rhs);
-        constexpr Time& operator/=(float rhs);
-        constexpr Time& operator/=(int64_t rhs);
+        constexpr auto operator+=(const Time& rhs) -> Time&;
+        constexpr auto operator-=(const Time& rhs) -> Time&;
+        constexpr auto operator*=(float rhs) -> Time&;
+        constexpr auto operator*=(int64_t rhs) -> Time&;
+        constexpr auto operator/=(float rhs) -> Time&;
+        constexpr auto operator/=(int64_t rhs) -> Time&;
 
       private:
         std::chrono::microseconds value{};
@@ -92,15 +93,15 @@ namespace Engine {
       public:
         ElapsedTime(const Time& interval = Time::Seconds(-1));
 
-        [[nodiscard]] const Time& GetStartTime() const;
+        [[nodiscard]] auto GetStartTime() const -> const Time&;
 
         void SetStartTime(const Time& startTime);
 
-        [[nodiscard]] const Time& GetInterval() const;
+        [[nodiscard]] auto GetInterval() const -> const Time&;
 
         void SetInterval(const Time& interval);
 
-        uint32_t GetElapsed();
+        auto GetElapsed() -> uint32_t;
 
       private:
         Time startTime;
@@ -111,17 +112,17 @@ namespace Engine {
       public:
         void Update();
 
-        Time currentTime;
-        Time lastTime;
-        Time change;
+        Time CurrentTime;
+        Time LastTime;
+        Time Change;
     };
 
     class ChangePerSecond {
       public:
         void Update(const Time& time);
 
-        uint32_t valueTemp = 0;
-        uint32_t value = 0;
-        Time valueTime;
+        uint32_t ValueTemp = 0;
+        uint32_t Value = 0;
+        Time ValueTime;
     };
 } // namespace Engine

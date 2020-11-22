@@ -3,17 +3,17 @@
 namespace Engine {
     class Version {
       public:
-        Version(uint8_t p_major, uint8_t p_minor, uint8_t p_patch);
+        Version(uint8_t major, uint8_t minor, uint8_t patch);
 
-        [[nodiscard]] uint8_t GetMajor() const;
-        [[nodiscard]] uint8_t GetMinor() const;
-        [[nodiscard]] uint8_t GetPatch() const;
+        [[nodiscard]] auto GetMajor() const -> uint8_t;
+        [[nodiscard]] auto GetMinor() const -> uint8_t;
+        [[nodiscard]] auto GetPatch() const -> uint8_t;
 
-        [[nodiscard]] std::string ToString() const;
+        [[nodiscard]] auto ToString() const -> std::string;
 
       private:
-        uint8_t m_major;
-        uint8_t m_minor;
-        uint8_t m_patch;
+        uint8_t major;
+        uint8_t minor;
+        uint8_t patch;
     };
 } // namespace Engine

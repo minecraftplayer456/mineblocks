@@ -3,8 +3,8 @@
 #include <utility>
 
 namespace Engine {
-    Graph::Graph(std::vector<Node*> p_Nodes)
-        : m_Nodes(std::move(p_Nodes))
+    Graph::Graph(std::vector<Node*> nodes)
+        : nodes(std::move(nodes))
     {
     }
 
@@ -13,8 +13,8 @@ namespace Engine {
 
         std::queue<Node*> free;
 
-        for (Node* node : m_Nodes) {
-            if (node->m_InNeighbours.empty()) {
+        for (Node* node : nodes) {
+            if (node->inNeighbours.empty()) {
                 free.push(node);
             }
         }
@@ -26,29 +26,29 @@ namespace Engine {
             sorted.push_back(top);
             free.pop();
 
-            for (int i = 0; i < top->m_OutNeighbours.size(); i++) {
-                Node* neighbour = top->m_OutNeighbours[i];
+            for (int i = 0; i < top->outNeighbours.size(); i++) {
+                Node* neighbour = top->outNeighbours[i];
 
-                auto it = std::find(neighbour->m_InNeighbours.begin(),
-                                    neighbour->m_InNeighbours.end(), top);
-                neighbour->m_InNeighbours.erase(it);
+                auto it = std::find(neighbour->inNeighbours.begin(),
+                                    neighbour->inNeighbours.end(), top);
+                neighbour->inNeighbours.erase(it);
 
-                if (neighbour->m_InNeighbours.empty()) {
+                if (neighbour->inNeighbours.empty()) {
                     free.push(neighbour);
                 }
             }
         }
 
-        m_SortedNodes = sorted;
+        sortedNodes = sorted;
     }
 
-    std::vector<Node*> Graph::GetNodes() const
+    auto Graph::GetNodes() const -> std::vector<Node*>
     {
-        return m_Nodes;
+        return nodes;
     }
 
-    std::vector<Node*> Graph::GetSortedNodes() const
+    auto Graph::GetSortedNodes() const -> std::vector<Node*>
     {
-        return m_SortedNodes;
+        return sortedNodes;
     }
 } // namespace Engine

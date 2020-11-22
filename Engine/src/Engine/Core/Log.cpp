@@ -1,11 +1,9 @@
-#include "Log.hpp"
-
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Engine {
-    std::shared_ptr<spdlog::logger> Log::ClientLogger;
-    std::shared_ptr<spdlog::logger> Log::CoreLogger;
+    std::shared_ptr<spdlog::logger> Log::clientLogger;
+    std::shared_ptr<spdlog::logger> Log::coreLogger;
 
     bool Log::Init()
     {
@@ -14,17 +12,21 @@ namespace Engine {
         logSinks.emplace_back(
             std::make_shared<spdlog::sinks::basic_file_sink_mt>("Game.log", true));
 
-        CoreLogger =
+        coreLogger =
             std::make_shared<spdlog::logger>("ENGINE", begin(logSinks), end(logSinks));
-        spdlog::register_logger(CoreLogger);
-        CoreLogger->set_level(spdlog::level::trace);
-        CoreLogger->flush_on(spdlog::level::trace);
 
-        ClientLogger =
+        spdlog::register_logger(coreLogger);
+
+        coreLogger->set_level(spdlog::level::trace);
+        coreLogger->flush_on(spdlog::level::trace);
+
+        clientLogger =
             std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
-        spdlog::register_logger(ClientLogger);
-        ClientLogger->set_level(spdlog::level::trace);
-        ClientLogger->flush_on(spdlog::level::trace);
+
+        spdlog::register_logger(clientLogger);
+
+        clientLogger->set_level(spdlog::level::trace);
+        clientLogger->flush_on(spdlog::level::trace);
 
         return true;
     }

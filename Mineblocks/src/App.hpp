@@ -8,14 +8,14 @@ namespace Mineblocks {
         App();
 
         void Init(Engine::Engine* engine) override;
-        void Cleanup(Engine::Engine* engine) override;
+        void Cleanup([[maybe_unused]] Engine::Engine* engine) override;
     };
 
     class AppModule : public Engine::Module::Registrar<AppModule> {
       public:
         inline static const bool Registered = Register();
 
-        const char* GetName() const override
+        [[nodiscard]] auto GetName() const -> const char* override
         {
             return "mineblocks module";
         }

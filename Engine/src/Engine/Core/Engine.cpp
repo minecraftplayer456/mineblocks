@@ -1,16 +1,23 @@
 #include "Engine.hpp"
 
 namespace Engine {
-    Engine::Engine(Application* app)
-        : app(app)
+    Engine::Engine(std::unique_ptr<Application> app)
+        : app(std::move(app))
     {
     }
 
-    void Engine::Run()
+    auto Engine::Run() -> int
     {
-        Init();
-        Loop();
-        Cleanup();
+        try {
+            Init();
+            Loop();
+            Cleanup();
+            return 0;
+        }
+        catch (const std::exception& e) {
+            ENGINE_CORE_CRITICAL(e.what());
+            return 1;
+        }
     }
 
     void Engine::Init()
@@ -36,14 +43,15 @@ namespace Engine {
         running = true;
 
         while (running) {
-            elapsedUpdate.SetInterval(Time::Seconds(1.0f / upsLimit));
-            elapsedRender.SetInterval(Time::Seconds(1.0f / fpsLimit));
+            elapsedUpdate.SetInterval(Time::Seconds(1.0F / upsLimit));
+            elapsedRender.SetInterval(Time::Seconds(1.0F / fpsLimit));
 
             uint32_t updateTime = elapsedUpdate.GetElapsed();
+            // ENGINE_CORE_DEBUG("Update time: {}", updateTime);
             if (updateTime != 0) {
                 static int updates = 0;
 
-                ups.Update(Time::Now());
+                upsCounter.Update(Time::Now());
 
                 moduleManager.CallStage(Module::Stage::Input);
                 eventBus.NotifyStage(Event::Stage::Input);
@@ -53,11 +61,11 @@ namespace Engine {
 
                 deltaUpdate.Update();
 
-                if (updates >= 128) {
-                    ENGINE_CORE_DEV_DEBUG(
+                if (updates >= 16) {
+                    ENGINE_CORE_DEBUG(
                         "Ups delta: {}; Ups: {}; Fps Delta: {}; Fps: {}",
-                        deltaUpdate.change.AsMilliSeconds(), ups.value,
-                        deltaRender.change.AsMilliSeconds(), fps.value);
+                        deltaUpdate.Change.AsMilliSeconds(), upsCounter.Value,
+                        deltaRender.Change.AsMilliSeconds(), fpsCounter.Value);
                     updates = 0;
                 }
 
@@ -66,7 +74,7 @@ namespace Engine {
 
             uint32_t renderTime = elapsedRender.GetElapsed();
             if (renderTime != 0) {
-                fps.Update(Time::Now());
+                fpsCounter.Update(Time::Now());
 
                 moduleManager.CallStage(Module::Stage::Render);
                 eventBus.NotifyStage(Event::Stage::Render);
@@ -86,17 +94,17 @@ namespace Engine {
         app->Cleanup(this);
     }
 
-    Application* Engine::GetApplication() const
+    auto Engine::GetApplication() -> std::unique_ptr<Application>&
     {
         return app;
     }
 
-    ModuleManager& Engine::GetModuleManager()
+    auto Engine::GetModuleManager() -> ModuleManager&
     {
         return moduleManager;
     }
 
-    EventBus& Engine::GetEventBus()
+    auto Engine::GetEventBus() -> EventBus&
     {
         return eventBus;
     }
@@ -111,23 +119,23 @@ namespace Engine {
         fpsLimit = fps;
     }
 
-    const Time& Engine::GetDeltaUpdate() const
+    auto Engine::GetDeltaUpdate() const -> const Time&
     {
-        return deltaUpdate.change;
+        return deltaUpdate.Change;
     }
 
-    const Time& Engine::GetDeltaRender() const
+    auto Engine::GetDeltaRender() const -> const Time&
     {
-        return deltaRender.change;
+        return deltaRender.Change;
     }
 
-    uint32_t Engine::GetUps() const
+    auto Engine::GetUps() const -> uint32_t
     {
-        return ups.value;
+        return upsCounter.Value;
     }
 
-    uint32_t Engine::GetFps() const
+    auto Engine::GetFps() const -> uint32_t
     {
-        return fps.value;
+        return fpsCounter.Value;
     }
 } // namespace Engine

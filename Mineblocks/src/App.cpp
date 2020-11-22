@@ -11,7 +11,7 @@ namespace Mineblocks {
         engine->GetModuleManager().PushModule<AppModule>();
     }
 
-    void App::Cleanup(Engine::Engine* engine)
+    void App::Cleanup([[maybe_unused]] Engine::Engine* engine)
     {
     }
 
@@ -24,7 +24,7 @@ namespace Mineblocks {
     }
 } // namespace Mineblocks
 
-Engine::Application* Engine::CreateApplication()
+auto Engine::CreateApplication() -> std::unique_ptr<Application>
 {
-    return new Mineblocks::App();
+    return std::make_unique<Mineblocks::App>();
 }

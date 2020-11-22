@@ -7,21 +7,21 @@ namespace Engine {
         friend Graph;
 
       protected:
-        std::vector<Node*> m_InNeighbours;
-        std::vector<Node*> m_OutNeighbours;
+        std::vector<Node*> inNeighbours = {};
+        std::vector<Node*> outNeighbours = {};
     };
 
     class Graph {
       public:
-        explicit Graph(std::vector<Node*> p_Nodes);
+        explicit Graph(std::vector<Node*> nodes);
 
         void SortDependencies();
 
-        [[nodiscard]] std::vector<Node*> GetNodes() const;
-        [[nodiscard]] std::vector<Node*> GetSortedNodes() const;
+        [[nodiscard]] auto GetNodes() const -> std::vector<Node*>;
+        [[nodiscard]] auto GetSortedNodes() const -> std::vector<Node*>;
 
       private:
-        std::vector<Node*> m_Nodes;
-        std::vector<Node*> m_SortedNodes;
+        std::vector<Node*> nodes;
+        std::vector<Node*> sortedNodes;
     };
 } // namespace Engine

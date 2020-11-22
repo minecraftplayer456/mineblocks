@@ -8,22 +8,22 @@ namespace Engine {
       public:
         enum Stage {
             Never = 0,
-            Init = BIT(0),
-            Input = BIT(1),
-            Update = BIT(2),
-            Render = BIT(3),
-            Cleanup = BIT(4),
+            Init = Bit(0),
+            Input = Bit(1),
+            Update = Bit(2),
+            Render = Bit(3),
+            Cleanup = Bit(4),
             Always = Init | Input | Update | Render | Cleanup
         };
 
-        virtual const char* GetName() const = 0;
-        virtual int GetCalledAt() const = 0;
+        [[nodiscard]] virtual auto GetName() const -> const char* = 0;
+        [[nodiscard]] virtual auto GetCalledAt() const -> int = 0;
     };
 
     template <typename T>
     class EventHandler {
       public:
-        virtual bool Handle(const T& event) = 0;
+        virtual auto Handle(const T& event) -> bool = 0;
     };
 
     template <typename T>
@@ -34,7 +34,7 @@ namespace Engine {
         {
         }
 
-        bool Handle(const T& event) override
+        auto Handle(const T& event) -> bool override
         {
             return Func(event);
         };
@@ -53,8 +53,8 @@ namespace Engine {
         void UnrigesterHandler(std::shared_ptr<EventHandler<T>> handler);
 
         template <typename T>
-        std::shared_ptr<EventHandler<T>>
-        RegisterHandler(std::function<bool(const T&)> func);
+        auto RegisterHandler(std::function<bool(const T&)> func)
+            -> std::shared_ptr<EventHandler<T>>;
 
         template <typename T>
         void PushEvent(T* event);
@@ -63,8 +63,8 @@ namespace Engine {
         void NotifyStage(Event::Stage stage);
 
       private:
-        std::multimap<Event::Stage, EventIndex> Events;
-        std::multimap<TypeId, std::shared_ptr<EventHandler<Event>>> Handlers;
+        std::multimap<Event::Stage, EventIndex> events = {};
+        std::multimap<TypeId, std::shared_ptr<EventHandler<Event>>> handlers = {};
 
         void CallEvent(EventIndex& index);
     };
@@ -74,7 +74,7 @@ namespace Engine {
     {
         auto eventTypeId = TypeInfo<Event>::GetTypeId<T>();
 
-        Handlers.insert(std::pair(
+        handlers.insert(std::pair(
             eventTypeId, std::reinterpret_pointer_cast<EventHandler<Event>>(handler)));
     }
 
@@ -84,7 +84,7 @@ namespace Engine {
         auto eventTypeId = TypeInfo<Event>::GetTypeId<T>();
 
         auto handlerFound = std::find_if(
-            Handlers.begin(), Handlers.end(),
+            handlers.begin(), handlers.end(),
             [eventTypeId,
              handler](const std::pair<TypeId, std::shared_ptr<EventHandler<Event>>>& x) {
                 return x.second ==
@@ -92,8 +92,8 @@ namespace Engine {
                        x.first == eventTypeId;
             });
 
-        if (handlerFound != Handlers.end()) {
-            Handlers.erase(handlerFound);
+        if (handlerFound != handlers.end()) {
+            handlers.erase(handlerFound);
         }
         else {
             ENGINE_CORE_DEV_ERROR(
@@ -115,7 +115,7 @@ namespace Engine {
     {
         auto typeId = TypeInfo<Event>::GetTypeId<T>();
 
-        Events.insert(std::pair(static_cast<Event::Stage>(event->GetCalledAt()),
+        events.insert(std::pair(static_cast<Event::Stage>(event->GetCalledAt()),
                                 EventIndex(typeId, std::unique_ptr<T>(event))));
     }
 } // namespace Engine
