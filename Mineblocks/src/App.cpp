@@ -8,24 +8,19 @@ namespace Mineblocks {
 
     void App::Init(Engine::Engine* engine)
     {
-        ENGINE_DEBUG("Init mineblocks");
-
         engine->GetModuleManager().PushModule<AppModule>();
     }
 
     void App::Cleanup(Engine::Engine* engine)
     {
-        ENGINE_DEBUG("Cleanup mineblocks");
     }
 
     void AppModule::Init()
     {
-        ENGINE_DEBUG("Init mineblocks module");
     }
 
     void AppModule::Cleanup()
     {
-        ENGINE_DEBUG("Cleanup mineblocks module");
     }
 } // namespace Mineblocks
 

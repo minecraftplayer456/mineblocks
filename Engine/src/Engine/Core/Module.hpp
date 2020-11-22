@@ -41,7 +41,7 @@ namespace Engine {
             inline static T* Instance = nullptr;
 
             template <typename... Args>
-            static bool Register(const char* name, Requires<Args...>&& required = {})
+            static bool Register(Requires<Args...>&& required = {})
             {
                 ObjectRegistry::Registry()[TypeInfo<Base>::template GetTypeId<T>()] = {
                     []() {
@@ -59,6 +59,8 @@ namespace Engine {
         enum class Stage { Init, Input, Update, Render, Cleanup };
 
         using Index = std::pair<unsigned int, TypeId>;
+
+        [[nodiscard]] virtual const char* GetName() const = 0;
 
         virtual void Init();
         virtual void Input();
@@ -83,6 +85,9 @@ namespace Engine {
         T* PopModule();
 
         void CallStage(Module::Stage stage);
+
+        template <typename T>
+        void CallModule(Module::Stage stage);
 
       private:
         uint8_t NextModuleId = 0;
@@ -193,6 +198,45 @@ namespace Engine {
         else {
             ENGINE_CORE_DEV_ERROR("Try to pop unknown module type: {}", typeId);
             return nullptr;
+        }
+    }
+
+    template <typename T>
+    void ModuleManager::CallModule(Module::Stage stage)
+    {
+        auto typeId = TypeInfo<Module>::GetTypeId<T>();
+
+        auto moduleFound =
+            std::find_if(Modules.begin(), Modules.end(),
+                         [typeId](const std::pair<Module::Index, Module*> x) {
+                             return x.first.second == typeId;
+                         });
+
+        if (moduleFound != Modules.end()) {
+            Module* module = moduleFound->second;
+
+            switch (stage) {
+                case Module::Stage::Init:
+                    ENGINE_CORE_DEBUG("Init module: {}", module->GetName());
+                    module->Init();
+                    break;
+                case Module::Stage::Input:
+                    module->Input();
+                    break;
+                case Module::Stage::Update:
+                    module->Update();
+                    break;
+                case Module::Stage::Render:
+                    module->Render();
+                    break;
+                case Module::Stage::Cleanup:
+                    ENGINE_CORE_DEBUG("Cleanup module: {}", module->GetName());
+                    module->Cleanup();
+                    break;
+            }
+        }
+        else {
+            ENGINE_CORE_DEV_ERROR("Call unknow module type: ", typeId);
         }
     }
 } // namespace Engine

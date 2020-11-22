@@ -13,7 +13,12 @@ namespace Mineblocks {
 
     class AppModule : public Engine::Module::Registrar<AppModule> {
       public:
-        inline static const bool Registered = Register("App Module");
+        inline static const bool Registered = Register();
+
+        const char* GetName() const override
+        {
+            return "mineblocks module";
+        }
 
         void Init() override;
         void Cleanup() override;

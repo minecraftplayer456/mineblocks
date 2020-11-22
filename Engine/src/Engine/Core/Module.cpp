@@ -33,6 +33,7 @@ namespace Engine {
         switch (stage) {
             case Module::Stage::Init:
                 for (const auto [_, module] : Modules) {
+                    ENGINE_CORE_DEBUG("Init module: {}", module->GetName());
                     module->Init();
                 }
                 break;
@@ -53,6 +54,7 @@ namespace Engine {
                 break;
             case Module::Stage::Cleanup:
                 for (const auto [_, module] : Modules) {
+                    ENGINE_CORE_DEBUG("Cleanup module: {}", module->GetName());
                     module->Cleanup();
                 }
                 break;
