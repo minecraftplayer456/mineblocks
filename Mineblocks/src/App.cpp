@@ -6,12 +6,12 @@ namespace Mineblocks {
     {
     }
 
-    void App::Init(Engine::Engine* engine)
+    void App::Init()
     {
-        engine->GetModuleManager().PushModule<AppModule>();
+        Engine::ModuleManager::Get()->PushModule<AppModule>();
     }
 
-    void App::Cleanup([[maybe_unused]] Engine::Engine* engine)
+    void App::Cleanup()
     {
     }
 

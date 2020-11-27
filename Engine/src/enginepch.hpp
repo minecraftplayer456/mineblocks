@@ -21,5 +21,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "Engine/Core/Base.hpp"
 #include "Engine/Core/Log.hpp"
+#include "Engine/Util/ClassAttribs.hpp"

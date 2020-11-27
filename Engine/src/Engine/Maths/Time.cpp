@@ -3,12 +3,12 @@
 namespace Engine {
     Time Time::Now()
     {
-        static const auto localEpoch = std::chrono::high_resolution_clock::now();
+        static const auto LocalEpoch = std::chrono::high_resolution_clock::now();
         return std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::high_resolution_clock::now() - localEpoch);
+            std::chrono::high_resolution_clock::now() - LocalEpoch);
     }
 
-    std::string Time::GetDateTime(const std::string& format)
+    auto Time::GetDateTime(const std::string& format) -> std::string
     {
         auto now = std::chrono::system_clock::now();
         auto timeT = std::chrono::system_clock::to_time_t(now);
@@ -157,10 +157,6 @@ namespace Engine {
 
     auto ElapsedTime::GetElapsed() -> uint32_t
     {
-        if (interval.AsMicroSeconds<int>() < 0) {
-            return static_cast<uint32_t>(-1);
-        }
-
         Time now = Time::Now();
         uint32_t elapsed =
             static_cast<uint32_t>(std::floor((now - startTime) / interval));

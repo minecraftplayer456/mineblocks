@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Core/Module.hpp"
-#include "Engine/Util/TypeInfo.hpp"
 
 namespace Engine {
     class Event {
@@ -43,8 +42,10 @@ namespace Engine {
         const std::function<bool(const T&)> Func;
     };
 
-    class EventBus {
+    class EventBus : public Singleton<EventBus> {
       public:
+        inline static const bool Registered = Create();
+
         using EventIndex = std::pair<TypeId, std::unique_ptr<Event>>;
 
         template <typename T>

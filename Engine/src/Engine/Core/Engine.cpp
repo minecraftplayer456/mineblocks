@@ -24,10 +24,10 @@ namespace Engine {
     {
         ENGINE_CORE_INFO("Running {} v{}", app->GetName(), app->GetVersion().ToString());
 
-        app->Init(this);
+        app->Init();
 
-        moduleManager.CallStage(Module::Stage::Init);
-        eventBus.NotifyStage(Event::Stage::Init);
+        ModuleManager::Get()->CallStage(Module::Stage::Init);
+        EventBus::Get()->NotifyStage(Event::Stage::Init);
     }
 
     void Engine::RequestClose()
@@ -46,18 +46,17 @@ namespace Engine {
             elapsedUpdate.SetInterval(Time::Seconds(1.0F / upsLimit));
             elapsedRender.SetInterval(Time::Seconds(1.0F / fpsLimit));
 
-            uint32_t updateTime = elapsedUpdate.GetElapsed();
-            // ENGINE_CORE_DEBUG("Update time: {}", updateTime);
+            int updateTime = elapsedUpdate.GetElapsed();
             if (updateTime != 0) {
                 static int updates = 0;
 
                 upsCounter.Update(Time::Now());
 
-                moduleManager.CallStage(Module::Stage::Input);
-                eventBus.NotifyStage(Event::Stage::Input);
+                ModuleManager::Get()->CallStage(Module::Stage::Input);
+                EventBus::Get()->NotifyStage(Event::Stage::Input);
 
-                moduleManager.CallStage(Module::Stage::Update);
-                eventBus.NotifyStage(Event::Stage::Update);
+                ModuleManager::Get()->CallStage(Module::Stage::Update);
+                EventBus::Get()->NotifyStage(Event::Stage::Update);
 
                 deltaUpdate.Update();
 
@@ -72,12 +71,12 @@ namespace Engine {
                 updates++;
             }
 
-            uint32_t renderTime = elapsedRender.GetElapsed();
+            int renderTime = elapsedRender.GetElapsed();
             if (renderTime != 0) {
                 fpsCounter.Update(Time::Now());
 
-                moduleManager.CallStage(Module::Stage::Render);
-                eventBus.NotifyStage(Event::Stage::Render);
+                ModuleManager::Get()->CallStage(Module::Stage::Render);
+                EventBus::Get()->NotifyStage(Event::Stage::Render);
 
                 deltaRender.Update();
             }
@@ -88,25 +87,15 @@ namespace Engine {
     {
         ENGINE_CORE_INFO("Closing");
 
-        moduleManager.CallStage(Module::Stage::Cleanup);
-        eventBus.NotifyStage(Event::Stage::Cleanup);
+        ModuleManager::Get()->CallStage(Module::Stage::Cleanup);
+        EventBus::Get()->NotifyStage(Event::Stage::Cleanup);
 
-        app->Cleanup(this);
+        app->Cleanup();
     }
 
     auto Engine::GetApplication() -> std::unique_ptr<Application>&
     {
         return app;
-    }
-
-    auto Engine::GetModuleManager() -> ModuleManager&
-    {
-        return moduleManager;
-    }
-
-    auto Engine::GetEventBus() -> EventBus&
-    {
-        return eventBus;
     }
 
     void Engine::SetUpsLimit(float ups)

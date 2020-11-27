@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Util/Singleton.hpp"
 #include "Engine/Util/TypeInfo.hpp"
 
 namespace Engine {
@@ -30,23 +31,15 @@ namespace Engine {
         };
 
         template <typename T>
-        class Registrar : public Base {
-          public:
-            static auto Get() -> std::shared_ptr<T>
-            {
-                return instance;
-            }
-
+        class Registrar : public Base, public Singleton<T> {
           protected:
-            inline static std::shared_ptr<T> instance;
-
             template <typename... Args>
             static auto Register(Requires<Args...>&& required = {}) -> bool
             {
                 ObjectRegistry::Registry()[TypeInfo<Base>::template GetTypeId<T>()] = {
                     []() {
-                        instance = std::make_shared<T>();
-                        return instance;
+                        T::Create();
+                        return T::instance;
                     },
                     required.Get()};
                 return true;
@@ -54,7 +47,7 @@ namespace Engine {
         };
     };
 
-    class Module : public ObjectRegistry<Module> {
+    class Module : public ObjectRegistry<Module>, public NonCopyable {
       public:
         enum class Stage { Init, Input, Update, Render, Cleanup };
 
@@ -71,8 +64,10 @@ namespace Engine {
 
     template class TypeInfo<Module>;
 
-    class ModuleManager {
+    class ModuleManager : public Singleton<ModuleManager> {
       public:
+        inline static const bool Registered = Create();
+
         template <typename T>
         void PushModule(T* module);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Core/Module.hpp"
 #include "Engine/Util/Version.hpp"
 
 namespace Engine {
@@ -13,8 +12,8 @@ namespace Engine {
         [[nodiscard]] auto GetName() const -> const char*;
         [[nodiscard]] auto GetVersion() const -> const Version&;
 
-        virtual void Init(Engine* engine) = 0;
-        virtual void Cleanup(Engine* engine) = 0;
+        virtual void Init() = 0;
+        virtual void Cleanup() = 0;
 
       private:
         const char* name;

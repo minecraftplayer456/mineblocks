@@ -7,8 +7,8 @@ namespace Mineblocks {
       public:
         App();
 
-        void Init(Engine::Engine* engine) override;
-        void Cleanup([[maybe_unused]] Engine::Engine* engine) override;
+        void Init() override;
+        void Cleanup() override;
     };
 
     class AppModule : public Engine::Module::Registrar<AppModule> {

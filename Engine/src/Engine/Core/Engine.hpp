@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Application.hpp"
-#include "Engine/Core/Event/Event.hpp"
+#include "Engine/Core/Event.hpp"
 #include "Engine/Maths/Time.hpp"
 
 namespace Engine {
@@ -15,7 +15,6 @@ namespace Engine {
         [[nodiscard]] auto GetApplication() -> std::unique_ptr<Application>&;
 
         [[nodiscard]] auto GetModuleManager() -> ModuleManager&;
-        [[nodiscard]] auto GetEventBus() -> EventBus&;
 
         void SetUpsLimit(float ups);
         void SetFpsLimit(float fps);
@@ -33,9 +32,6 @@ namespace Engine {
         bool running = false;
 
         std::unique_ptr<Application> app;
-
-        ModuleManager moduleManager;
-        EventBus eventBus;
 
         float upsLimit = 20.0f, fpsLimit = 60.0f;
         DeltaTime deltaUpdate, deltaRender;
