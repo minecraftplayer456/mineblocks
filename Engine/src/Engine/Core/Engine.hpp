@@ -7,14 +7,12 @@
 namespace Engine {
     class Engine {
       public:
-        explicit Engine(std::unique_ptr<Application> app);
+        explicit Engine(Application* app);
 
         auto Run() -> int;
         void RequestClose();
 
         [[nodiscard]] auto GetApplication() -> std::unique_ptr<Application>&;
-
-        [[nodiscard]] auto GetModuleManager() -> ModuleManager&;
 
         void SetUpsLimit(float ups);
         void SetFpsLimit(float fps);

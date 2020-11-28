@@ -15,6 +15,8 @@ namespace Engine {
             Always = Init | Input | Update | Render | Cleanup
         };
 
+        virtual ~Event() = default;
+
         [[nodiscard]] virtual auto GetName() const -> const char* = 0;
         [[nodiscard]] virtual auto GetCalledAt() const -> int = 0;
     };

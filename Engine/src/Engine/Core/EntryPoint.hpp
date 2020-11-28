@@ -2,4 +2,4 @@
 
 #include "Engine/Core/Engine.hpp"
 
-extern auto Engine::CreateApplication() -> std::unique_ptr<Application>;
+extern auto Engine::CreateApplication() -> Application*;

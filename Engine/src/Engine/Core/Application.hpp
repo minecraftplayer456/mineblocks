@@ -5,7 +5,7 @@
 namespace Engine {
     class Engine;
 
-    class Application {
+    class Application : public NonCopyMovable {
       public:
         Application(const char* name, const Version& version);
 
@@ -20,5 +20,5 @@ namespace Engine {
         Version version;
     };
 
-    auto CreateApplication() -> std::unique_ptr<Application>;
+    auto CreateApplication() -> Application*;
 } // namespace Engine

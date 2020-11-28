@@ -1,8 +1,8 @@
 #include "Engine.hpp"
 
 namespace Engine {
-    Engine::Engine(std::unique_ptr<Application> app)
-        : app(std::move(app))
+    Engine::Engine(Application* app)
+        : app(std::unique_ptr<Application>(app))
     {
     }
 

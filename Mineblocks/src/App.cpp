@@ -24,7 +24,7 @@ namespace Mineblocks {
     }
 } // namespace Mineblocks
 
-auto Engine::CreateApplication() -> std::unique_ptr<Application>
+auto Engine::CreateApplication() -> Application*
 {
-    return std::make_unique<Mineblocks::App>();
+    return new Mineblocks::App;
 }
