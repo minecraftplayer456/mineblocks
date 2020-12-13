@@ -1,5 +1,5 @@
 set(ENGINE_SOURCE_FILES
-        src/Engine/Common/Test.cpp
+        src/Engine/Common/Log.cpp
 
         src/Engine.cpp)
 
@@ -9,7 +9,8 @@ target_precompile_headers(Engine PUBLIC src/EnginePch.hpp)
 target_link_libraries(Engine ${CONAN_LIBS})
 
 set(ENGINE_TEST_SOURCE_FILES
-        test/Engine/Common/TestTest.cpp)
+        test/Engine/Common/LogTest.cpp
+        )
 
 add_executable(EngineTest ${ENGINE_TEST_SOURCE_FILES})
 target_include_directories(EngineTest PUBLIC src)
