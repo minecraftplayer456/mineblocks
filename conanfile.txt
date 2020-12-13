@@ -1,8 +1,0 @@
-[requires]
-glfw/3.3.2
-glm/0.9.9.5
-
-spdlog/1.8.0
-
-[generators]
-cmake
