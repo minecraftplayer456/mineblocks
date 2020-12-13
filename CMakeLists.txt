@@ -38,6 +38,8 @@ endif()
 include("conan/${COMPILER_NAME}/conanbuildinfo.cmake")
 conan_basic_setup()
 
+enable_testing()
+
 #Include subprojects
 add_subdirectory(Engine)
 add_subdirectory(Mineblocks)
