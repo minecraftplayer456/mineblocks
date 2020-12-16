@@ -1,25 +1,43 @@
 #include "Engine/Common/Scheduler.hpp"
 
-class TestTask : public Engine::Task{
-    void Run(uint32_t threadId) override{
-        ENGINE_CORE_INFO("Hi! id: {}", threadId);
+class TestTask : public enki::ITaskSet {
+  public:
+    void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override
+    {
+        ENGINE_CORE_INFO("Task: {}, {}, {}", threadnum_, range_.start, range_.end);
     }
 };
 
-int main(){
+class TestTask2 : public enki::ITaskSet {
+  public:
+    void ExecuteRange(enki::TaskSetPartition range_, uint32_t threadnum_) override
+    {
+        ENGINE_CORE_INFO("Task2: {}, {}, {}", threadnum_, range_.start, range_.end);
+    }
+};
+
+int main()
+{
     Engine::Log::Initialize();
 
-    Engine::Scheduler scheduler;
-    scheduler.Initialize();
+    enki::TaskScheduler scheduler;
+    scheduler.Initialize(1);
 
     TestTask task;
-    TestTask task2;
+    TestTask2 task2;
+    // task2.m_Priority = enki::TASK_PRIORITY_HIGH;
+    // TestTask task3;
+    // TestTask task4;
 
-    scheduler.AddTaskToQueue(&task);
-    scheduler.AddTaskToQueue(&task2);
+    scheduler.AddTaskSetToPipe(&task);
+    scheduler.AddTaskSetToPipe(&task2);
+    // scheduler.AddTaskSetToPipe(&task3);
+    // scheduler.AddTaskSetToPipe(&task4);
 
-    scheduler.WaitForTask(&task);
-    scheduler.WaitForTask(&task2);
+    scheduler.WaitforTask(&task);
+    scheduler.WaitforTask(&task2);
+    // scheduler.WaitforTask(&task3);
+    // scheduler.WaitforTask(&task4);
 
-    scheduler.Cleanup();
+    scheduler.WaitforAllAndShutdown();
 }
