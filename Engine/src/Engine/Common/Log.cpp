@@ -7,7 +7,7 @@ namespace Engine {
     std::shared_ptr<spdlog::logger> Log::coreLogger;
     std::shared_ptr<spdlog::logger> Log::appLogger;
 
-    auto Log::Init() -> bool
+    auto Log::Initialize() -> bool
     {
         if (Initialized) {
             return true;

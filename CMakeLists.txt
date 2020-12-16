@@ -35,7 +35,7 @@ else ()
 endif()
 
 #Include conan build information
-include("conan/${COMPILER_NAME}/conanbuildinfo.cmake")
+include("${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake")
 conan_basic_setup()
 
 enable_testing()

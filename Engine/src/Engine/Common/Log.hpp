@@ -3,13 +3,26 @@
 namespace Engine {
     class Log {
       public:
-        static auto Init() -> bool;
+        /**
+         * Initializes the logger. This can only be executed once.
+         * @return true if initialization was successfully
+         */
+        static auto Initialize() -> bool;
 
+        /**
+         * Gets logger, that should only be used by the game engine.
+         * For the app GetAppLogger() should be used
+         * @return
+         */
         static auto GetCoreLogger() -> std::shared_ptr<spdlog::logger>&
         {
             return coreLogger;
         }
 
+        /**
+         * Gets logger for the app/game.
+         * @return
+         */
         static auto GetAppLogger() -> std::shared_ptr<spdlog::logger>&
         {
             return appLogger;
