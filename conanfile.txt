@@ -1,8 +1,0 @@
-[requires]
-spdlog/1.8.2
-enkits/1.8
-
-gtest/1.10.0
-
-[generators]
-cmake
