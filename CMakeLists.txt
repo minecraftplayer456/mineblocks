@@ -20,6 +20,9 @@ set(SOURCE_FILES
 
         src/Mineblocks/Maths/Time.cpp
 
+        src/Mineblocks/State/GameState.cpp
+        src/Mineblocks/State/PlayingState.cpp
+
         src/Mineblocks/Application.cpp
 
         src/Main.cpp)

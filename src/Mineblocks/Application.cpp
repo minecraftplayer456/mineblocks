@@ -1,6 +1,13 @@
 #include "Application.hpp"
 
+#include "Mineblocks/State/PlayingState.hpp"
+
 namespace Mineblocks {
+    Application::Application()
+    {
+        PushState<PlayingState>();
+    }
+
     void Application::Run()
     {
         try {
@@ -35,11 +42,19 @@ namespace Mineblocks {
             elapsedUpdate.SetInterval(Time::Seconds(1.0F / upsLimit));
             elapsedRender.SetInterval(Time::Seconds(1.0F / fpsLimit));
 
+            if (popState) {
+                auto& oldState = states.front();
+                states.pop_back();
+                oldState->OnPop();
+            }
+
+            auto& state = states.front();
+
             if (elapsedUpdate.GetElapsed() != 0) {
                 ups.Update(Time::Now());
 
-                Input();
-                Update();
+                Input(state);
+                Update(state);
 
                 deltaUpdate.Update();
             }
@@ -47,20 +62,24 @@ namespace Mineblocks {
             if (elapsedRender.GetElapsed() != 0) {
                 fps.Update(Time::Now());
 
-                Render();
+                Render(state);
 
                 deltaRender.Update();
             }
         }
     }
 
-    void Application::Input()
+    void Application::Input(std::unique_ptr<GameState>& state)
     {
+        state->Input();
     }
 
-    void Application::Update()
+    void Application::Update(std::unique_ptr<GameState>& state)
     {
         static int updates = 0;
+
+        state->Update();
+
         if (updates >= 64) {
             LOG_DEBUG(Application,
                       "Fps: {}; Ups: {}; Render Delta: {}ms; Update Delta {}ms",
@@ -71,8 +90,9 @@ namespace Mineblocks {
         updates++;
     }
 
-    void Application::Render()
+    void Application::Render(std::unique_ptr<GameState>& state)
     {
+        state->Render();
     }
 
     void Application::Cleanup()
@@ -85,6 +105,12 @@ namespace Mineblocks {
     auto Application::IsRunning() const -> bool
     {
         return running;
+    }
+
+    void Application::PopState()
+    {
+        LOG_DEBUG(Application, "Pop current game state");
+        popState = true;
     }
 
     void Application::SetUpsLimit(float upsLimit)
