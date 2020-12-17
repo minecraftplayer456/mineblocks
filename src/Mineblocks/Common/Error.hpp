@@ -17,7 +17,7 @@
 
 #define THROW(Exception, Msg)                                                            \
     {                                                                                    \
-        throw(Exception(Msg, EXCEPTION_LOC));                                          \
+        throw(Exception(Msg, EXCEPTION_LOC));                                            \
     }
 
 namespace Mineblocks {

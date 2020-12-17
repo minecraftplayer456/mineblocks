@@ -1,15 +1,9 @@
-#include "Mineblocks/Common/Error.hpp"
+#include <Mineblocks/Application.hpp>
 
-EXCEPTION(Mineblocks::Exception, TestException);
-
-int main()
+auto main() -> int
 {
-    try{
-        THROW(TestException, "Alarm!!!");
-    }
-    catch (const Mineblocks::Exception& e) {
-        LOG_CRITICAL(All, e.what());
-    }
+    Mineblocks::Application application;
+    application.Run();
 
     return 0;
 }

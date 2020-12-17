@@ -17,4 +17,5 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Mineblocks/Common/Error.hpp"
 #include "Mineblocks/Common/Log.hpp"

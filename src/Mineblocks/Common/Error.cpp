@@ -2,7 +2,12 @@
 
 namespace Mineblocks {
     Exception::Exception(const char* name, const char* description, const char* function,
-                         const char* file, const int line) : name(name), description(description), function(function), file(file), line(line)
+                         const char* file, const int line)
+        : name(name)
+        , description(description)
+        , function(function)
+        , file(file)
+        , line(line)
     {
         std::ostringstream str;
         str << "(<" << name << "> in " << function << " at " << file << ":" << line
