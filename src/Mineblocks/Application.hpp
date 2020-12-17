@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Mineblocks/Devices/Window.hpp"
 #include "Mineblocks/Maths/Time.hpp"
 #include "Mineblocks/State/GameState.hpp"
 
@@ -41,6 +42,8 @@ namespace Mineblocks {
         float upsLimit = 20.0F, fpsLimit = 60.0F;
 
         std::vector<std::unique_ptr<GameState>> states;
+
+        std::unique_ptr<Window> window;
 
         void Init();
         void Loop();

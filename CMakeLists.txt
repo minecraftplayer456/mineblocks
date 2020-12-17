@@ -18,7 +18,10 @@ set(SOURCE_FILES
         src/Mineblocks/Common/Error.cpp
         src/Mineblocks/Common/Log.cpp
 
+        src/Mineblocks/Devices/Window.cpp
+
         src/Mineblocks/Maths/Time.cpp
+
 
         src/Mineblocks/State/GameState.cpp
         src/Mineblocks/State/PlayingState.cpp

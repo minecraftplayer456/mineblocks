@@ -13,6 +13,8 @@ namespace Mineblocks {
                 return "Common";
             case LogCategory::Core:
                 return "Core";
+            case LogCategory::Devices:
+                return "Devices";
         }
         return "Unknown-Category";
     }
