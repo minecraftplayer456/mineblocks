@@ -3,7 +3,11 @@
 #include <spdlog/spdlog.h>
 
 namespace Mineblocks {
-    enum class LogCategory { Common, Core };
+    enum class LogCategory {
+        All,
+        Common,
+        Core
+    };
 
     auto LogCategoryToString(LogCategory category) -> const char*;
 
@@ -69,24 +73,24 @@ namespace Mineblocks {
 
 
 #ifdef CONFIGURATION_DEBUG
-#define LOG_DEBUG_TRACE(...) ::Mineblocks::Log::GetLogger.Trace(__VA_ARGS__)
-#define LOG_DEBUG_DEBUG(...) ::Mineblocks::Log::GetLogger.Debug(__VA_ARGS__)
-#define LOG_DEBUG_INFO(...) ::Mineblocks::Log::GetLogger.Info(__VA_ARGS__)
-#define LOG_DEBUG_WARN(...) ::Mineblocks::Log::GetLogger.Warn(__VA_ARGS__)
-#define LOG_DEBUG_ERROR(...) ::Mineblocks::Log::GetLogger.Error(__VA_ARGS__)
-#define LOG_DEBUG_CRITICAL(...) ::Mineblocks::Log::GetLogger.Critical(__VA_ARGS__)
+#define LOG_DEBUG_TRACE(Category, ...) Mineblocks::Log::GetLogger().Trace(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG_DEBUG(Category, ...) Mineblocks::Log::GetLogger().Debug(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG_INFO(Category, ...) Mineblocks::Log::GetLogger().Info(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG_WARN(Category, ...) Mineblocks::Log::GetLogger().Warn(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG_ERROR(Category, ...) Mineblocks::Log::GetLogger().Error(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG_CRITICAL(Category, ...) Mineblocks::Log::GetLogger().Critical(Mineblocks::LogCategory::Category, __VA_ARGS__)
 #else
-#define LOG_DEBUG_TRACE(...)
-#define LOG_DEBUG_DEBUG(...)
-#define LOG_DEBUG_INFO(...)
-#define LOG_DEBUG_WARN(...)
-#define LOG_DEBUG_ERROR(...)
-#define LOG_DEBUG_CRITICAL(...)
+#define LOG_DEBUG_TRACE(Category, ...)
+#define LOG_DEBUG_DEBUG(Category, ...)
+#define LOG_DEBUG_INFO(Category, ...)
+#define LOG_DEBUG_WARN(Category, ...)
+#define LOG_DEBUG_ERROR(Category, ...)
+#define LOG_DEBUG_CRITICAL(Category, ...)
 #endif
 
-#define LOG_TRACE(...) ::Mineblocks::Log::GetLogger.Trace(__VA_ARGS__)
-#define LOG_DEBUG(...) ::Mineblocks::Log::GetLogger.Debug(__VA_ARGS__)
-#define LOG_INFO(...) ::Mineblocks::Log::GetLogger.Info(__VA_ARGS__)
-#define LOG_WARN(...) ::Mineblocks::Log::GetLogger.Warn(__VA_ARGS__)
-#define LOG_ERROR(...) ::Mineblocks::Log::GetLogger.Error(__VA_ARGS__)
-#define LOG_CRITICAL(...) ::Mineblocks::Log::GetLogger.Critical(__VA_ARGS__)
+#define LOG_TRACE(Category, ...) Mineblocks::Log::GetLogger().Trace(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_DEBUG(Category, ...) Mineblocks::Log::GetLogger().Debug(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_INFO(Category, ...) Mineblocks::Log::GetLogger().Info(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_WARN(Category, ...) Mineblocks::Log::GetLogger().Warn(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_ERROR(Category, ...) Mineblocks::Log::GetLogger().Error(Mineblocks::LogCategory::Category, __VA_ARGS__)
+#define LOG_CRITICAL(Category, ...) Mineblocks::Log::GetLogger().Critical(Mineblocks::LogCategory::Category, __VA_ARGS__)
