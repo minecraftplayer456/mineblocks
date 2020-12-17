@@ -18,6 +18,8 @@ set(SOURCE_FILES
         src/Mineblocks/Common/Error.cpp
         src/Mineblocks/Common/Log.cpp
 
+        src/Mineblocks/Maths/Time.cpp
+
         src/Mineblocks/Application.cpp
 
         src/Main.cpp)
