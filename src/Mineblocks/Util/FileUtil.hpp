@@ -5,6 +5,6 @@ namespace Mineblocks {
 
     class FileUtil {
       public:
-        static auto GetFileContents(const char* filePath) -> std::string;
+        static auto GetFileContents(const std::string& filePath) -> std::string;
     };
 } // namespace Mineblocks

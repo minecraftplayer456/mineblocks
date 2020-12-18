@@ -23,7 +23,7 @@
                     std::forward<Args>(args)...)                                         \
         {                                                                                \
         }                                                                                \
-    };
+    }
 
 #define THROW(Exception, Msg)                                                            \
     {                                                                                    \

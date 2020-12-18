@@ -22,6 +22,8 @@ set(SOURCE_FILES
 
         src/Mineblocks/Maths/Time.cpp
 
+        src/Mineblocks/Render/Shaders/Shader.cpp
+        src/Mineblocks/Render/Shaders/ShaderLoader.cpp
 
         src/Mineblocks/State/GameState.cpp
         src/Mineblocks/State/PlayingState.cpp

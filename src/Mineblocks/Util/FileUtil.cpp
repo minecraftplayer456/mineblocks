@@ -1,7 +1,7 @@
 #include "FileUtil.hpp"
 
 namespace Mineblocks {
-    auto FileUtil::GetFileContents(const char* filePath) -> std::string
+    auto FileUtil::GetFileContents(const std::string& filePath) -> std::string
     {
         std::ifstream inFile(filePath);
 
