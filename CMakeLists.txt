@@ -26,6 +26,8 @@ set(SOURCE_FILES
         src/Mineblocks/State/GameState.cpp
         src/Mineblocks/State/PlayingState.cpp
 
+        src/Mineblocks/Util/FileUtil.cpp
+
         src/Mineblocks/Application.cpp
 
         src/Main.cpp)
