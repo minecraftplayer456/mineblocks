@@ -1,8 +1,8 @@
 #include "Error.hpp"
 
 namespace Mineblocks {
-    Exception::Exception(const char* name, const char* description, const char* function,
-                         const char* file, const int line)
+    Exception::Exception(const char* name, const std::basic_string<char>& description,
+                         const char* function, const char* file, const int line)
         : name(name)
         , description(description)
         , function(function)
@@ -24,7 +24,7 @@ namespace Mineblocks {
         return name;
     }
 
-    auto Exception::GetDescription() const -> const char*
+    auto Exception::GetDescription() const -> std::basic_string<char>
     {
         return description;
     }
