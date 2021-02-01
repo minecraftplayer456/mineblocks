@@ -1,46 +1,106 @@
 #include "Shader.hpp"
 
-#include "ShaderLoader.hpp"
+#include "Mineblocks/Util/FileUtil.hpp"
 
 namespace Mineblocks {
-    Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
-        : id(ShaderLoader::LoadShaders(vertexFile, fragmentFile))
-    {
-        UseShader();
-    }
-
     Shader::~Shader()
     {
-        glDeleteProgram(id);
+        Destroy();
     }
 
-    void Shader::UseShader() const
+    auto Shader::CompileShader(const std::string_view& source, GLenum shaderType)
     {
-        glUseProgram(id);
+        auto shaderId = glCreateShader(shaderType);
+
+        const GLchar* sourcePtr = source.data();
+        const GLint sourceLenght = source.length();
+
+        glShaderSource(shaderId, 1, &sourcePtr, &sourceLenght);
+        glCompileShader(shaderId);
+
+        GLint logLength = 0;
+        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength) {
+            std::string infoLog(logLength, 0);
+            glGetShaderInfoLog(shaderId, logLength, nullptr, infoLog.data());
+
+            THROW_ARGS(ShaderException, "Could not compile shader: {}", infoLog);
+        }
+
+        return shaderId;
+    }
+
+    auto Shader::LinkShaders(GLuint vertexShaderId, GLuint fragmentShaderId)
+    {
+        auto id = glCreateProgram();
+
+        glAttachShader(id, vertexShaderId);
+        glAttachShader(id, fragmentShaderId);
+
+        glLinkProgram(id);
+
+        glDetachShader(id, vertexShaderId);
+        glDetachShader(id, fragmentShaderId);
+
+        GLint logLength = 0;
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength) {
+            std::string infoLog(logLength, 0);
+            glGetProgramInfoLog(id, logLength, nullptr, infoLog.data());
+
+            THROW_ARGS(ShaderException, "Could not link shader: {}", infoLog);
+        }
+
+        return id;
+    }
+
+    void Shader::Create(const std::string_view& vertexFile,
+                        const std::string_view& fragmentFile)
+    {
+        glUseProgram(0);
+
+        auto vertexSource = FileUtil::GetFileContents(vertexFile);
+        auto fragmentSource = FileUtil::GetFileContents(fragmentFile);
+
+        auto vertexId = CompileShader(vertexSource, GL_VERTEX_SHADER);
+        auto fragmentId = CompileShader(fragmentSource, GL_FRAGMENT_SHADER);
+
+        auto programId = LinkShaders(vertexId, fragmentId);
+    }
+
+    void Shader::Destroy()
+    {
+    }
+    void Shader::Bind()
+    {
     }
 
     void Shader::LoadInt(GLuint location, int value)
     {
-        glUniform1i(location, value);
     }
 
     void Shader::LoadFloat(GLuint location, float value)
     {
-        glUniform1f(location, value);
     }
 
     void Shader::LoadVector2(GLuint location, const glm::vec2& vec)
     {
-        glUniform2f(location, vec.x, vec.y);
     }
 
     void Shader::LoadVector3(GLuint location, const glm::vec3& vec)
     {
-        glUniform3f(location, vec.x, vec.y, vec.z);
     }
 
     void Shader::LoadVector4(GLuint location, const glm::vec4& vec)
     {
-        glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    auto Shader::GetUniformLocation(const char* name)
+    {
+        return nullptr;
+    }
+
+    void Shader::LoadUniforms()
+    {
     }
 } // namespace Mineblocks

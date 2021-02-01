@@ -3,7 +3,7 @@
 #include "Mineblocks/Application.hpp"
 
 namespace Mineblocks {
-    EXCEPTION(Exception, GlfwException)
+    EXCEPTION(Exception, GlfwException);
 
     void glfwFramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
@@ -39,6 +39,8 @@ namespace Mineblocks {
         }
 
         glfwMakeContextCurrent(window);
+
+        gladLoadGL();
 
         glfwSetFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
 

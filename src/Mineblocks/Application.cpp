@@ -32,6 +32,9 @@ namespace Mineblocks {
     {
         LOG_INFO(Application, "Initializing mineblocks");
 
+        renderMaster = std::make_unique<RenderMaster>();
+        renderMaster->Init();
+
         window = std::make_unique<Window>(this);
 
         LOG_INFO(Application, "Initialized mineblocks");
@@ -96,10 +99,7 @@ namespace Mineblocks {
 
     void Application::Render(std::unique_ptr<GameState>& state)
     {
-        state->Render();
-
-        glClearColor(0.0F, 0.5F, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        state->Render(renderMaster);
 
         window->Render();
     }

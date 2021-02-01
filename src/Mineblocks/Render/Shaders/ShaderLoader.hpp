@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 namespace Mineblocks {
-    EXCEPTION(Exception, ShaderException);
+    // EXCEPTION(Exception, ShaderException);
 
     class ShaderLoader {
       public:

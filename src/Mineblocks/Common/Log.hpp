@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 
 namespace Mineblocks {
-    enum class LogCategory { Application, Common, Core, Devices };
+    enum class LogCategory { Application, Common, Core, Devices, Render };
 
     auto LogCategoryToString(LogCategory category) -> const char*;
 

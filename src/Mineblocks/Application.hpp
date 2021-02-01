@@ -2,6 +2,7 @@
 
 #include "Mineblocks/Devices/Window.hpp"
 #include "Mineblocks/Maths/Time.hpp"
+#include "Mineblocks/Render/RenderMaster.hpp"
 #include "Mineblocks/State/GameState.hpp"
 
 namespace Mineblocks {
@@ -44,6 +45,7 @@ namespace Mineblocks {
         std::vector<std::unique_ptr<GameState>> states;
 
         std::unique_ptr<Window> window;
+        std::unique_ptr<RenderMaster> renderMaster;
 
         void Init();
         void Loop();

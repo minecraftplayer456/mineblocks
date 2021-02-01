@@ -15,6 +15,8 @@ namespace Mineblocks {
                 return "Core";
             case LogCategory::Devices:
                 return "Devices";
+            case LogCategory::Render:
+                return "Render";
         }
         return "Unknown-Category";
     }

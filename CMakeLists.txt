@@ -14,6 +14,8 @@ else ()
     message (FATAL_ERROR "${CMAKE_SYSTEM_NAME} is not supported as build configuration. Only release and debug are!")
 endif()
 
+add_compile_definitions(GLFW_INCLUDE_NONE)
+
 set(SOURCE_FILES
         src/Mineblocks/Common/Error.cpp
         src/Mineblocks/Common/Log.cpp
@@ -22,8 +24,11 @@ set(SOURCE_FILES
 
         src/Mineblocks/Maths/Time.cpp
 
+        src/Mineblocks/Render/Shaders/BasicShader.cpp
         src/Mineblocks/Render/Shaders/Shader.cpp
         src/Mineblocks/Render/Shaders/ShaderLoader.cpp
+
+        src/Mineblocks/Render/RenderMaster.cpp
 
         src/Mineblocks/State/GameState.cpp
         src/Mineblocks/State/PlayingState.cpp

@@ -40,9 +40,9 @@ namespace Mineblocks {
     auto ShaderLoader::LoadShaders(const std::string& vertexShader,
                                    const std::string& fragmentShader) -> GLuint
     {
-        auto vertexSource =
+        std::string vertexSource =
             FileUtil::GetFileContents("Shaders/" + vertexShader + ".vert");
-        auto fragmentSource =
+        std::string fragmentSource =
             FileUtil::GetFileContents("Shaders/" + fragmentShader + ".frag");
 
         auto vertexShaderId = CompileShader(vertexSource.c_str(), GL_VERTEX_SHADER);

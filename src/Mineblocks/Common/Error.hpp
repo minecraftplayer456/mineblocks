@@ -4,6 +4,8 @@
 
 #include <fmt/format.h>
 
+// TODO Better error checking with own glCheck(Result, ExceptionToThrow, Message, Params);
+
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define EXCEPTION_LOC __FUNCTION__, __FILENAME__, __LINE__
 
