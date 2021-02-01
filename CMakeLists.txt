@@ -17,26 +17,6 @@ endif()
 add_compile_definitions(GLFW_INCLUDE_NONE)
 
 set(SOURCE_FILES
-        src/Mineblocks/Common/Error.cpp
-        src/Mineblocks/Common/Log.cpp
-
-        src/Mineblocks/Devices/Window.cpp
-
-        src/Mineblocks/Maths/Time.cpp
-
-        src/Mineblocks/Render/Shaders/BasicShader.cpp
-        src/Mineblocks/Render/Shaders/Shader.cpp
-        src/Mineblocks/Render/Shaders/ShaderLoader.cpp
-
-        src/Mineblocks/Render/RenderMaster.cpp
-
-        src/Mineblocks/State/GameState.cpp
-        src/Mineblocks/State/PlayingState.cpp
-
-        src/Mineblocks/Util/FileUtil.cpp
-
-        src/Mineblocks/Application.cpp
-
         src/Main.cpp)
 
 add_executable(mineblocks ${SOURCE_FILES})
