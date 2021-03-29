@@ -5,4 +5,4 @@ glad/0.1.34
 glm/0.9.9.8
 
 [generators]
-cmake
+premake
